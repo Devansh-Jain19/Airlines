@@ -1,0 +1,72 @@
+<resources>
+    <string name="app_name">Airlines</string>
+    <string name="tagline">Fly Beyond Horizons</string>
+
+    <!-- Auth -->
+    <string name="welcome_back">Welcome Back</string>
+    <string name="sign_in_subtitle">Sign in to manage flights &amp; bookings</string>
+    <string name="email_label">Email Address</string>
+    <string name="email_hint">e.g. traveler@airline.com</string>
+    <string name="password_label">Password</string>
+    <string name="password_hint">Enter your password</string>
+    <string name="first_name_label">First Name</string>
+    <string name="last_name_label">Last Name</string>
+    <string name="phone_label">Phone Number</string>
+    <string name="passport_label">Passport Number</string>
+    <string name="btn_sign_in">Sign In</string>
+    <string name="btn_register">Create Account</string>
+    <string name="dont_have_account">Don\'t have an account? Sign Up</string>
+    <string name="already_have_account">Already have an account? Sign In</string>
+    <string name="create_account_title">Create Account</string>
+    <string name="create_account_subtitle">Join us for a seamless travel experience</string>
+
+    <!-- Search -->
+    <string name="nav_search">Search</string>
+    <string name="nav_my_bookings">My Trips</string>
+    <string name="nav_profile">Profile</string>
+    <string name="search_flights_title">Search Flights</string>
+    <string name="from_label">From (Departure Airport)</string>
+    <string name="to_label">To (Destination Airport)</string>
+    <string name="date_label">Departure Date</string>
+    <string name="btn_search_flights">Find Flights</string>
+    <string name="select_date">Select Date</string>
+    <string name="popular_destinations">Popular Destinations</string>
+
+    <!-- Flights -->
+    <string name="flight_results">Available Flights</string>
+    <string name="no_flights_found">No flights found matching your search.</string>
+    <string name="select_flight">Select Flight</string>
+    <string name="stops_nonstop">Non-stop</string>
+
+    <!-- Seats -->
+    <string name="select_seats_title">Select Seat</string>
+    <string name="seat_legend_available">Available</string>
+    <string name="seat_legend_selected">Selected</string>
+    <string name="seat_legend_occupied">Occupied</string>
+    <string name="aisle">AISLE</string>
+    <string name="btn_continue_to_checkout">Proceed to Checkout</string>
+
+    <!-- Checkout & Payment -->
+    <string name="checkout_title">Checkout &amp; Payment</string>
+    <string name="booking_summary">Booking Summary</string>
+    <string name="payment_method">Select Payment Method</string>
+    <string name="pay_card">Credit / Debit Card</string>
+    <string name="pay_upi">UPI / Instant Pay</string>
+    <string name="pay_netbanking">Net Banking</string>
+    <string name="pay_wallet">Digital Wallet</string>
+    <string name="total_fare">Total Amount</string>
+    <string name="btn_pay_now">Confirm &amp; Pay</string>
+
+    <!-- Boarding Pass & Tickets -->
+    <string name="boarding_pass_title">Boarding Pass</string>
+    <string name="my_bookings_title">My Bookings</string>
+    <string name="passenger">PASSENGER</string>
+    <string name="flight">FLIGHT</string>
+    <string name="seat">SEAT</string>
+    <string name="gate">GATE</string>
+    <string name="terminal">TERMINAL</string>
+    <string name="departure">DEPARTURE</string>
+    <string name="booking_ref">BOOKING REF</string>
+    <string name="btn_home">Back to Home</string>
+    <string name="btn_cancel_booking">Cancel Booking</string>
+</resources>
