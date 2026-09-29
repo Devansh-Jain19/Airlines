@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="6dp">
+
+    <!-- Normal Seat Container -->
+    <LinearLayout
+        android:id="@+id/llSeatContainer"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:background="@drawable/bg_seat_available"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:clickable="true"
+        android:focusable="true">
+
+        <ImageView
+            android:id="@+id/ivSeatIcon"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:src="@drawable/ic_seat"
+            app:tint="@color/text_secondary"
+            xmlns:app="http://schemas.android.com/apk/res-auto" />
+
+        <TextView
+            android:id="@+id/tvSeatNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="2dp"
+            android:textColor="@color/text_primary"
+            android:textSize="12sp"
+            android:textStyle="bold"
+            tools:text="12A" />
+
+        <TextView
+            android:id="@+id/tvSeatPrice"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/text_muted"
+            android:textSize="9sp"
+            tools:text="$50" />
+    </LinearLayout>
+
+    <!-- Aisle Divider / Label (visible only for aisle column or aisle markers) -->
+    <TextView
+        android:id="@+id/tvAisleLabel"
+        android:layout_width="match_parent"
+        android:layout_height="62dp"
+        android:gravity="center"
+        android:text="@string/aisle"
+        android:textColor="@color/text_muted"
+        android:textSize="11sp"
+        android:textStyle="bold"
+        android:visibility="gone" />
+
+</FrameLayout>
