@@ -32,7 +32,7 @@ public class AuthRepository {
                     String errorMsg = "Registration failed (code: " + response.code() + ")";
                     try {
                         if (response.errorBody() != null) {
-                            errorMsg = response.errorBody().string();
+                            errorMsg = parseErrorMessage(response.errorBody().string(), errorMsg);
                         }
                     } catch (Exception ignored) {}
                     callback.onError(errorMsg);
@@ -56,7 +56,7 @@ public class AuthRepository {
                     String errorMsg = "Invalid email or password (code: " + response.code() + ")";
                     try {
                         if (response.errorBody() != null) {
-                            errorMsg = response.errorBody().string();
+                            errorMsg = parseErrorMessage(response.errorBody().string(), errorMsg);
                         }
                     } catch (Exception ignored) {}
                     callback.onError(errorMsg);
@@ -68,5 +68,16 @@ public class AuthRepository {
                 callback.onError(t.getMessage() != null ? t.getMessage() : "Network error during login");
             }
         });
+    }
+
+    private String parseErrorMessage(String raw, String fallback) {
+        if (raw == null || raw.trim().isEmpty()) return fallback;
+        try {
+            org.json.JSONObject json = new org.json.JSONObject(raw);
+            if (json.has("message") && !json.isNull("message")) {
+                return json.getString("message");
+            }
+        } catch (Exception ignored) {}
+        return raw;
     }
 }
