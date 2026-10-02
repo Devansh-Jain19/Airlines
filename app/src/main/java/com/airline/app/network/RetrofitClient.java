@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
     // 10.0.2.2 points to host machine localhost inside Android Emulator
-    private static final String BASE_URL = "http://10.0.2.2:8080/";
+    private static String BASE_URL = "http://10.0.2.2:8080/";
     private static Retrofit retrofit = null;
     private static ApiService apiService = null;
 
@@ -33,6 +33,17 @@ public class RetrofitClient {
             apiService = retrofit.create(ApiService.class);
         }
         return apiService;
+    }
+
+    public static synchronized void setBaseUrl(String newBaseUrl) {
+        if (newBaseUrl != null && !newBaseUrl.trim().isEmpty()) {
+            if (!newBaseUrl.endsWith("/")) {
+                newBaseUrl = newBaseUrl + "/";
+            }
+            BASE_URL = newBaseUrl;
+            retrofit = null;
+            apiService = null;
+        }
     }
 
     public static String getBaseUrl() {

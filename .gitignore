@@ -43,3 +43,7 @@ captures/
 .DS_Store
 Thumbs.db
 .vscode/
+
+# Maven target
+target/
+backend/target/
