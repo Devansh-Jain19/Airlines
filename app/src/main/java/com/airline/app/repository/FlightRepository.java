@@ -64,7 +64,7 @@ public class FlightRepository {
         });
     }
 
-    public void loadSeats(Long flightId, RepositoryCallback<List<SeatDto>>() {
+    public void loadSeats(Long flightId, RepositoryCallback<List<SeatDto>> callback) {
         apiService.getFlightSeats(flightId).enqueue(new Callback<List<SeatDto>>() {
             @Override
             public void onResponse(Call<List<SeatDto>> call, Response<List<SeatDto>> response) {

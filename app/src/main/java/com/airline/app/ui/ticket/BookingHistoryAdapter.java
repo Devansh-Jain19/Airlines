@@ -95,7 +95,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
                 binding.tvBookingDate.setText("Booking Date: " + (booking.getBookingTime() != null ? booking.getBookingTime() : "Recent"));
             }
 
-            binding.btnViewPass.setOnClickListener(v -> {
+            binding.btnViewTicket.setOnClickListener(v -> {
                 if (listener != null) listener.onViewPass(booking);
             });
 
