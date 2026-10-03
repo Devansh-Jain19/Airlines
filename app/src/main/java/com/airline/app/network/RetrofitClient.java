@@ -8,7 +8,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class RetrofitClient {
     // 10.0.2.2 points to host machine localhost inside Android Emulator
-    private static String BASE_URL = "http://10.0.2.2:8080/";
+    private static String BASE_URL = "http://10.0.2.2:8081/";
     private static Retrofit retrofit = null;
     private static ApiService apiService = null;
 
