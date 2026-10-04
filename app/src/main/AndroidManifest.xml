@@ -7,6 +7,7 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 
     <application
+        android:name=".AirlineApp"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -63,6 +64,11 @@
         <!-- Booking History Screen -->
         <activity
             android:name=".ui.ticket.MyBookingsActivity"
+            android:exported="false" />
+
+        <!-- User Profile Screen -->
+        <activity
+            android:name=".ui.profile.ProfileActivity"
             android:exported="false" />
 
     </application>

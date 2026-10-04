@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment;
 import com.airline.app.R;
 import com.airline.app.databinding.ActivityMainBinding;
 import com.airline.app.ui.auth.LoginActivity;
+import com.airline.app.ui.profile.ProfileFragment;
 import com.airline.app.ui.ticket.MyBookingsActivity;
 import com.airline.app.util.SessionManager;
 
@@ -41,12 +42,8 @@ public class MainActivity extends AppCompatActivity {
                 }
                 return false;
             } else if (itemId == R.id.nav_profile) {
-                if (!sessionManager.isLoggedIn()) {
-                    startActivity(new Intent(MainActivity.this, LoginActivity.class));
-                } else {
-                    startActivity(new Intent(MainActivity.this, MyBookingsActivity.class));
-                }
-                return false;
+                loadFragment(new ProfileFragment());
+                return true;
             }
             return false;
         });

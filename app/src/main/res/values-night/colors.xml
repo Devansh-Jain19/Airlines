@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary">#38BDF8</color>
+    <color name="primary_dark">#0B1120</color>
+    <color name="primary_light">#7DD3FC</color>
+    <color name="accent">#38BDF8</color>
+    <color name="accent_light">#1E293B</color>
+
+    <color name="background">#0B1120</color>
+    <color name="surface">#162032</color>
+    <color name="surface_variant">#1E293B</color>
+
+    <color name="text_primary">#F8FAFC</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="text_muted">#64748B</color>
+    <color name="text_on_primary">#FFFFFF</color>
+
+    <color name="divider">#243248</color>
+    <color name="border">#2E3E58</color>
+
+    <!-- Status Colors -->
+    <color name="status_success">#34D399</color>
+    <color name="status_success_bg">#064E3B</color>
+    <color name="status_warning">#FBBF24</color>
+    <color name="status_warning_bg">#78350F</color>
+    <color name="status_error">#F87171</color>
+    <color name="status_error_bg">#7F1D1D</color>
+
+    <!-- Seat Map Specifics -->
+    <color name="seat_available">#1E293B</color>
+    <color name="seat_available_stroke">#475569</color>
+    <color name="seat_occupied">#334155</color>
+    <color name="seat_occupied_text">#64748B</color>
+    <color name="seat_selected">#0284C7</color>
+    <color name="seat_selected_text">#FFFFFF</color>
+
+    <!-- Airline Gradients & Badges -->
+    <color name="gradient_start">#0B1120</color>
+    <color name="gradient_end">#075985</color>
+    <color name="ticket_header">#0F172A</color>
+</resources>

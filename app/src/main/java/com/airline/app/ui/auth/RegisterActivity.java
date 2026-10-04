@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider;
 
 import com.airline.app.databinding.ActivityRegisterBinding;
 import com.airline.app.model.request.RegisterRequest;
+import com.airline.app.model.response.PassengerDto;
 import com.airline.app.network.Resource;
 import com.airline.app.util.SessionManager;
 import com.airline.app.viewmodel.AuthViewModel;
@@ -45,7 +46,16 @@ public class RegisterActivity extends AppCompatActivity {
                     binding.progressBar.setVisibility(View.GONE);
                     binding.btnRegister.setEnabled(true);
                     if (resource.data != null) {
-                        sessionManager.savePassenger(resource.data);
+                        PassengerDto p = resource.data;
+                        String fName = binding.etFirstName.getText() != null ? binding.etFirstName.getText().toString().trim() : "";
+                        String lName = binding.etLastName.getText() != null ? binding.etLastName.getText().toString().trim() : "";
+                        String ph = binding.etPhone.getText() != null ? binding.etPhone.getText().toString().trim() : "";
+                        String pass = binding.etPassport.getText() != null ? binding.etPassport.getText().toString().trim() : "";
+                        if (p.getFirstName() == null || p.getFirstName().isEmpty()) p.setFirstName(fName);
+                        if (p.getLastName() == null || p.getLastName().isEmpty()) p.setLastName(lName);
+                        if (p.getPhone() == null || p.getPhone().isEmpty()) p.setPhone(ph);
+                        if (p.getPassportNumber() == null || p.getPassportNumber().isEmpty()) p.setPassportNumber(pass);
+                        sessionManager.savePassenger(p);
                         Toast.makeText(this, "Registration successful! Please log in.", Toast.LENGTH_LONG).show();
                         finish();
                     }

@@ -17,6 +17,7 @@ import com.airline.app.model.response.AirportDto;
 import com.airline.app.network.Resource;
 import com.airline.app.ui.auth.LoginActivity;
 import com.airline.app.ui.flights.FlightListActivity;
+import com.airline.app.ui.profile.ProfileActivity;
 import com.airline.app.util.DateUtils;
 import com.airline.app.util.SessionManager;
 import com.airline.app.viewmodel.FlightViewModel;
@@ -48,18 +49,14 @@ public class SearchFragment extends Fragment {
         sessionManager = new SessionManager(requireContext());
         flightViewModel = new ViewModelProvider(this).get(FlightViewModel.class);
 
-        // Display user greeting
-        if (sessionManager.isLoggedIn() && sessionManager.getName() != null) {
-            binding.tvWelcomeUser.setText("Hello, " + sessionManager.getName() + " 👋");
-        }
+        // Update user greeting and profile avatar logo
+        updateProfileHeader();
 
-        // Setup Logout button
-        binding.ivLogout.setOnClickListener(v -> {
-            sessionManager.logout();
-            Intent intent = new Intent(requireContext(), LoginActivity.class);
-            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-            startActivity(intent);
-        });
+        // Clicking the user greeting opens Profile (if logged in) or Login (if logged out)
+        binding.llHeaderUser.setOnClickListener(v -> handleProfileClick());
+
+        // Clicking the profile logo button
+        binding.layoutProfileButton.setOnClickListener(v -> handleProfileClick());
 
         // Initialize default search date (Today or Tomorrow)
         selectedDateCalendar = Calendar.getInstance();
@@ -202,6 +199,52 @@ public class SearchFragment extends Fragment {
         list.add(new AirportDto(9L, "SIN", "Singapore Changi Airport", "Singapore", "Singapore"));
         list.add(new AirportDto(10L, "HND", "Haneda Airport", "Tokyo", "Japan"));
         return list;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateProfileHeader();
+    }
+
+    private void handleProfileClick() {
+        if (sessionManager != null && sessionManager.isLoggedIn()) {
+            startActivity(new Intent(requireContext(), ProfileActivity.class));
+        } else {
+            startActivity(new Intent(requireContext(), LoginActivity.class));
+        }
+    }
+
+    private void updateProfileHeader() {
+        if (binding == null) return;
+
+        if (sessionManager != null && sessionManager.isLoggedIn()) {
+            String name = sessionManager.getName();
+            binding.tvWelcomeUser.setText("Hello, " + (name != null && !name.isEmpty() ? name : "Traveler") + " 👋");
+
+            // Show avatar initials in the profile logo button
+            String initials = computeInitials(name);
+            binding.tvProfileInitials.setText(initials);
+            binding.tvProfileInitials.setVisibility(View.VISIBLE);
+            binding.ivProfileIcon.setVisibility(View.GONE);
+        } else {
+            binding.tvWelcomeUser.setText("Hello, Guest 👋");
+            binding.tvProfileInitials.setVisibility(View.GONE);
+            binding.ivProfileIcon.setVisibility(View.VISIBLE);
+        }
+    }
+
+    private String computeInitials(String name) {
+        if (name == null || name.trim().isEmpty()) return "US";
+        String[] parts = name.trim().split("\\s+");
+        if (parts.length == 1) {
+            return parts[0].substring(0, Math.min(2, parts[0].length())).toUpperCase();
+        } else if (parts.length >= 2) {
+            String first = parts[0].substring(0, 1).toUpperCase();
+            String second = parts[parts.length - 1].substring(0, 1).toUpperCase();
+            return first + second;
+        }
+        return "US";
     }
 
     @Override

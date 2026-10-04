@@ -69,4 +69,17 @@
     <string name="booking_ref">BOOKING REF</string>
     <string name="btn_home">Back to Home</string>
     <string name="btn_cancel_booking">Cancel Booking</string>
+
+    <!-- Profile & Client Branding -->
+    <string name="profile_title">Passenger Profile</string>
+    <string name="client_airline_name">SkyWings Airlines</string>
+    <string name="client_airline_portal">Official Passenger Portal</string>
+    <string name="profile_personal_details">Personal Details</string>
+    <string name="profile_personal_details_sub">Your registered traveler information</string>
+    <string name="profile_membership_title">SkyWings Frequent Flyer</string>
+    <string name="profile_membership_tier">Silver Elite Member • Active</string>
+    <string name="btn_view_bookings">View My Bookings &amp; Tickets</string>
+    <string name="btn_sign_out">Sign Out</string>
+    <string name="logout_confirm_title">Sign Out</string>
+    <string name="logout_confirm_msg">Are you sure you want to sign out of your account?</string>
 </resources>

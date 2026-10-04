@@ -1,0 +1,24 @@
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="48dp"
+    android:height="48dp"
+    android:viewportWidth="48"
+    android:viewportHeight="48">
+  <!-- Outer Glow / Background Ring -->
+  <path
+      android:fillColor="#1E3A8A"
+      android:pathData="M24,2A22,22 0 1,0 46,24A22,22 0 0,0 24,2Z"/>
+  <path
+      android:fillColor="#0284C7"
+      android:pathData="M24,5A19,19 0 1,0 43,24A19,19 0 0,0 24,5Z"/>
+  <!-- Winged Flight Symbol -->
+  <path
+      android:fillColor="#FFFFFF"
+      android:pathData="M37,23L27.5,17.5V10C27.5,8.07 25.93,6.5 24,6.5S20.5,8.07 20.5,10V17.5L11,23V26L20.5,23.5V31L17,33.5V36L24,34.5L31,36V33.5L27.5,31V23.5L37,26V23Z"/>
+  <!-- Orbit Ring Accent -->
+  <path
+      android:fillColor="#38BDF8"
+      android:pathData="M14,35C11,31 9,26 9,21C9,17 11,13 14,10L12,8C8.5,11.5 6.5,16 6.5,21C6.5,26.5 8.8,32.2 12.2,36.5L14,35Z"/>
+  <path
+      android:fillColor="#38BDF8"
+      android:pathData="M34,13C37,17 39,22 39,27C39,31 37,35 34,38L36,40C39.5,36.5 41.5,32 41.5,27C41.5,21.5 39.2,15.8 35.8,11.5L34,13Z"/>
+</vector>
