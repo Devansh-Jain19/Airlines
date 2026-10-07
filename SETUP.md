@@ -9,7 +9,7 @@ Welcome! If you are new to this project or setting up a full-stack system for th
 2. [Prerequisites & Tool Installation](#2-prerequisites--tool-installation)
 3. [Step 1: Database Setup (MySQL & In-Memory H2)](#3-step-1-database-setup)
 4. [Step 2: Backend Setup (Spring Boot 3.x)](#4-step-2-backend-setup)
-5. [Step 3: Frontend Setup (Android App)](#5-step-3-frontend-setup)
+5. [Step 3: Frontend Setup (Web App on Localhost & Android App)](#5-step-3-frontend-setup)
 6. [Step 4: End-to-End Testing Walkthrough](#6-step-4-end-to-end-testing-walkthrough)
 7. [Common Pitfalls & Troubleshooting FAQ](#7-common-pitfalls--troubleshooting-faq)
 
@@ -17,32 +17,35 @@ Welcome! If you are new to this project or setting up a full-stack system for th
 
 ## 1. Architecture & Port Map
 
-Our project consists of three interconnected layers:
+Our project consists of frontend clients connecting to a robust backend & database layer:
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│              1. Android Frontend Mobile App             │
-│        (Runs on Android Emulator or Physical Phone)     │
-└────────────────────────────┬────────────────────────────┘
-                             │ HTTP REST Calls (JSON)
-                             ▼
-┌─────────────────────────────────────────────────────────┐
-│               2. Spring Boot 3.x Backend                │
-│                 Port: 8081 (Tomcat Server)              │
-└────────────────────────────┬────────────────────────────┘
-                             │ JDBC / Hibernate (JPA)
-                             ▼
-┌─────────────────────────────────────────────────────────┐
-│                  3. Relational Database                 │
-│      Option A: In-Memory H2 (Default, Zero-Config)      │
-│      Option B: MySQL 8.0+ on Port 3306 (Production)     │
-└─────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────┐     ┌──────────────────────────────────────┐
+│      1A. Web Frontend (Localhost)    │     │      1B. Native Android Mobile App   │
+│      Port: 3000 (Desktop Browser)    │     │       (Emulator or Physical Phone)   │
+└──────────────────┬───────────────────┘     └──────────────────┬───────────────────┘
+                   │                                            │
+                   └───────────────────┬────────────────────────┘
+                                       │ HTTP REST Calls (JSON)
+                                       ▼
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│                            2. Spring Boot 3.x Backend                             │
+│                              Port: 8081 (Tomcat Server)                           │
+└──────────────────────────────────────┬────────────────────────────────────────────┘
+                                       │ JDBC / Hibernate (JPA)
+                                       ▼
+┌───────────────────────────────────────────────────────────────────────────────────┐
+│                               3. Relational Database                              │
+│                   Option A: In-Memory H2 (Default, Zero-Config)                   │
+│                   Option B: MySQL 8.0+ on Port 3306 (Production)                  │
+└───────────────────────────────────────────────────────────────────────────────────┘
 ```
 
 ### Network & Port Reference Table
 
 | Component | Default Host / IP | Port | Notes |
 | :--- | :--- | :--- | :--- |
+| **Web Frontend** | `localhost` | `3000` | Responsive web UI connecting directly to Spring Boot REST API |
 | **Backend REST API** | `localhost` (Host machine) | `8081` | Changed from 8080 to prevent conflicts with local web servers |
 | **MySQL Database** | `localhost` | `3306` | Default MySQL port |
 | **Android Emulator Bridge** | `10.0.2.2` | `8081` | `10.0.2.2` is the special alias emulator uses to reach host machine `localhost` |
@@ -228,28 +231,75 @@ All tests should pass cleanly!
 
 ---
 
-## 5. Step 3: Frontend Setup (Android App)
+## 5. Step 3: Frontend Setup
 
-The mobile client is a native Android application built with Java, Material Design 3, and Retrofit 2.
+You can interact with the Airlines Reservation System using either the **Web Frontend on Localhost** (easiest & instant) or the **Native Android Mobile App**.
 
-### 1. Open Android Studio
+---
+
+### Option A: Web Frontend on Localhost (Recommended — Quick & Instant)
+
+The web frontend (**AeroSkyline**) is located in the [`web-frontend/`](file:///d:/Airlines/Airlines/web-frontend) folder and connects directly to the Spring Boot REST API on `http://localhost:8081`.
+
+#### 1. Start the Web Frontend Server
+Run any of the following commands from the repository root:
+
+- **Method 1 (1-Click Batch Script on Windows):**
+  ```cmd
+  .\run_web_frontend.bat
+  ```
+
+- **Method 2 (Using Node.js / NPX):**
+  ```powershell
+  cd web-frontend
+  npx serve -p 3000 .
+  ```
+
+- **Method 3 (Using Python):**
+  ```powershell
+  cd web-frontend
+  python -m http.server 3000
+  ```
+
+#### 2. Open in Your Browser
+Navigate to:
+```
+http://localhost:3000
+```
+
+#### 3. Features Included:
+- **Live Status Monitoring:** Status pill in navbar confirms connection to Spring Boot backend.
+- **Flight Discovery:** Dynamic origin/destination airports populated from `/api/airports`, date picker, cabin class filters, and popular routes (`DEL ➔ BOM`, `BOM ➔ BLR`, `DEL ➔ DXB`).
+- **Interactive 2D Aircraft Cabin:** Real-time seat map loaded from `/api/flights/{id}/seats` with business & economy rows, seat selection, and price calculation.
+- **Fare & Baggage Breakdown:** Dynamic baggage options (+5kg, +10kg) and 12% aviation taxes.
+- **Simulated Checkout & Payment:** Card, UPI, and Net Banking checkout triggering `/api/bookings` and `/api/payments`.
+- **Luxury Boarding Pass:** Generates a full digital ticket with PNR, barcode, and print/PDF options.
+- **Account Management:** Sign In with demo credentials (`aarav@gmail.com` / `Password@123`), registration, and **My Bookings** with 1-click booking cancellation.
+
+---
+
+### Option B: Native Android Mobile App (Android Studio)
+
+The mobile client is a native Android application built with Java, Material Design 3, and Retrofit 2 located in the [`app/`](file:///d:/Airlines/Airlines/app) module.
+
+#### 1. Open Android Studio
 1. Launch **Android Studio**.
 2. Click **File** -> **Open...**
-3. Browse to and select the root directory: `/Users/hardik/Airlines` (or your local clone path).
+3. Browse to and select the project directory: `d:\Airlines\Airlines`.
 4. Click **OK** to open the project.
 
-### 2. Allow Gradle to Sync
+#### 2. Allow Gradle to Sync
 - Android Studio will automatically start downloading required dependencies and syncing Gradle.
 - Wait until the progress bar at the bottom right says **"Gradle sync finished"**.
 
-### 3. Verify Server URL Configuration in `RetrofitClient.java`
-Open the file [`app/src/main/java/com/airline/app/network/RetrofitClient.java`](file:///Users/hardik/Airlines/app/src/main/java/com/airline/app/network/RetrofitClient.java):
+#### 3. Verify Server URL Configuration in `RetrofitClient.java`
+Open the file [`app/src/main/java/com/airline/app/network/RetrofitClient.java`](file:///d:/Airlines/Airlines/app/src/main/java/com/airline/app/network/RetrofitClient.java):
 ```java
 // Default setting for Android Emulator:
 private static String BASE_URL = "http://10.0.2.2:8081/";
 ```
 
-#### Understanding the Base URL:
+##### Understanding the Base URL:
 - **Scenario A: Running in Android Emulator (Default):**
   - Leave `http://10.0.2.2:8081/` as-is.
   - The Android emulator runs in its own virtual network. The IP `10.0.2.2` automatically routes traffic from the emulator directly to your computer's `localhost:8081`.
@@ -263,14 +313,14 @@ private static String BASE_URL = "http://10.0.2.2:8081/";
      private static String BASE_URL = "http://192.168.1.45:8081/";
      ```
 
-### 4. Create or Start an Android Virtual Device (AVD Emulator)
+#### 4. Create or Start an Android Virtual Device (AVD Emulator)
 1. In Android Studio, open the **Device Manager** (phone icon in upper right corner or `Tools` -> `Device Manager`).
 2. If no device exists, click **Create Device**.
 3. Select **Pixel 7** or **Pixel 8**, click **Next**.
 4. Select system image: **API 33 (Tiramisu)** or **API 34 (UpsideDownCake)**, click **Download** if needed, then **Next** -> **Finish**.
 5. Click the green **Play** button next to your virtual device to boot it up.
 
-### 5. Launch the Android App
+#### 5. Launch the Android App
 1. Make sure your Spring Boot backend is already running on port 8081.
 2. In Android Studio, ensure the run target dropdown at the top displays **app** and your emulator is selected.
 3. Click the green **Run 'app'** button (or press `Shift + F10`).

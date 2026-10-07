@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroSkyline | Premium Flight Booking & Reservation</title>
+    <meta name="description" content="Next-generation airline booking experience. Search domestic and international flights, select real-time cabin seats, and manage boarding passes seamlessly.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="background-glow"></div>
+    <div class="grid-overlay"></div>
+
+    <!-- Navigation Header -->
+    <header class="navbar">
+        <div class="nav-container">
+            <div class="brand-logo" id="brand-logo">
+                <div class="logo-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M17.8 19.2L16 11l3.5-3.5C21 6 21.5 4 21 3.5c-.5-.5-2.5 0-4 1.5L13.5 8.5 5.3 6.7c-.9-.2-1.7.3-2 1.1-.3.8 0 1.7.7 2.2l5.5 3.8-3.2 3.2-2.5-.5c-.5-.1-1 .1-1.3.5-.4.4-.4 1 0 1.4l2.1 2.1c.4.4 1 .4 1.4 0l.5-2.5 3.2-3.2 3.8 5.5c.5.7 1.4 1 2.2.7.8-.3 1.3-1.1 1.1-2z"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-title">AERO<span class="gradient-text">SKYLINE</span></span>
+                    <span class="brand-subtitle">Airlines Reservation System</span>
+                </div>
+            </div>
+
+            <div class="backend-badge" id="backend-status-badge" title="Backend Server Status">
+                <span class="status-dot pulsing" id="status-dot"></span>
+                <span id="backend-status-text">Connecting to localhost:8081...</span>
+            </div>
+
+            <nav class="nav-actions">
+                <button class="nav-btn" id="nav-search-btn">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+                    Search Flights
+                </button>
+                <button class="nav-btn" id="nav-bookings-btn">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                    My Bookings
+                </button>
+                <div id="auth-nav-slot">
+                    <button class="btn-primary-sm" id="nav-login-btn">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                        Sign In
+                    </button>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="main-wrapper">
+        <!-- Hero Section & Search Console -->
+        <section class="hero-section" id="hero-section">
+            <div class="hero-content">
+                <div class="hero-tag">
+                    <span class="tag-sparkle">✦</span> Spring Boot REST + Live Database Powered
+                </div>
+                <h1 class="hero-heading">
+                    Explore the World with <span class="gradient-text">Seamless Aviation</span>
+                </h1>
+                <p class="hero-subtext">
+                    Real-time flight discovery, live aircraft seat matrices, and instant digital boarding passes across premier global airlines.
+                </p>
+            </div>
+
+            <!-- Booking Widget Card -->
+            <div class="search-card glass-panel" id="search-card">
+                <div class="search-tabs">
+                    <button class="tab-btn active" data-trip="one-way">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                        One Way
+                    </button>
+                    <button class="tab-btn" data-trip="round-trip">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m17 2 4 4-4 4"/><path d="M3 11v-1a4 4 0 0 1 4-4h14"/><path d="m7 22-4-4 4-4"/><path d="M21 13v1a4 4 0 0 1-4 4H3"/></svg>
+                        Round Trip
+                    </button>
+                    <div class="tab-badge">Fast Search</div>
+                </div>
+
+                <form class="search-form" id="flight-search-form">
+                    <div class="form-grid">
+                        <!-- Origin Input -->
+                        <div class="field-group">
+                            <label for="origin-select" class="field-label">Departure From</label>
+                            <div class="input-container">
+                                <span class="input-icon">🛫</span>
+                                <select id="origin-select" class="custom-select" required>
+                                    <option value="" disabled selected>Loading airports...</option>
+                                </select>
+                            </div>
+                            <span class="field-hint" id="origin-city-hint">Select origin hub</span>
+                        </div>
+
+                        <!-- Swap Button -->
+                        <button type="button" class="swap-btn" id="swap-airports-btn" title="Swap Origin & Destination">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="m16 3 4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16"/>
+                            </svg>
+                        </button>
+
+                        <!-- Destination Input -->
+                        <div class="field-group">
+                            <label for="destination-select" class="field-label">Destination To</label>
+                            <div class="input-container">
+                                <span class="input-icon">🛬</span>
+                                <select id="destination-select" class="custom-select" required>
+                                    <option value="" disabled selected>Loading airports...</option>
+                                </select>
+                            </div>
+                            <span class="field-hint" id="dest-city-hint">Select destination hub</span>
+                        </div>
+
+                        <!-- Departure Date -->
+                        <div class="field-group">
+                            <label for="departure-date" class="field-label">Departure Date</label>
+                            <div class="input-container">
+                                <span class="input-icon">📅</span>
+                                <input type="date" id="departure-date" class="custom-input" required>
+                            </div>
+                            <span class="field-hint">Seeded dates available</span>
+                        </div>
+
+                        <!-- Passengers / Class -->
+                        <div class="field-group">
+                            <label for="travel-class" class="field-label">Cabin Class</label>
+                            <div class="input-container">
+                                <span class="input-icon">💺</span>
+                                <select id="travel-class" class="custom-select">
+                                    <option value="ALL">All Cabins</option>
+                                    <option value="ECONOMY">Economy</option>
+                                    <option value="BUSINESS">Business Class</option>
+                                </select>
+                            </div>
+                            <span class="field-hint">Cabin tier preference</span>
+                        </div>
+                    </div>
+
+                    <div class="search-footer">
+                        <div class="quick-routes">
+                            <span class="quick-label">Popular Routes:</span>
+                            <button type="button" class="chip-btn" data-from="DEL" data-to="BOM">DEL ➔ BOM</button>
+                            <button type="button" class="chip-btn" data-from="BOM" data-to="BLR">BOM ➔ BLR</button>
+                            <button type="button" class="chip-btn" data-from="DEL" data-to="DXB">DEL ➔ DXB</button>
+                            <button type="button" class="chip-btn" data-from="JFK" data-to="LHR">JFK ➔ LHR</button>
+                        </div>
+                        <button type="submit" class="btn-search" id="search-submit-btn">
+                            <span class="btn-text">Search Flights</span>
+                            <span class="btn-arrow">→</span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+
+        <!-- Search Results Section -->
+        <section class="results-section hidden" id="results-section">
+            <div class="results-header">
+                <div>
+                    <h2 class="section-title">Available Flights</h2>
+                    <p class="section-subtitle" id="results-meta-text">Showing flights for your search</p>
+                </div>
+                <div class="results-filters">
+                    <select id="sort-select" class="sort-select">
+                        <option value="price-asc">Price: Lowest First</option>
+                        <option value="price-desc">Price: Highest First</option>
+                        <option value="duration-asc">Duration: Shortest</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Loading State -->
+            <div class="loading-state hidden" id="flights-loading">
+                <div class="spinner"></div>
+                <p>Retrieving real-time flight schedules from backend...</p>
+            </div>
+
+            <!-- Flights Container -->
+            <div class="flights-list" id="flights-list">
+                <!-- Injected via JavaScript -->
+            </div>
+
+            <!-- Empty State -->
+            <div class="empty-state hidden" id="flights-empty">
+                <div class="empty-icon">✈️</div>
+                <h3>No Flights Found</h3>
+                <p>No scheduled flights match your departure and destination dates. Try changing the date or selecting a popular route like DEL ➔ BOM.</p>
+                <button class="btn-outline" id="reset-search-btn">Reset Search</button>
+            </div>
+        </section>
+
+        <!-- Seat Selection Section -->
+        <section class="seat-section hidden" id="seat-section">
+            <div class="seat-section-header">
+                <button class="back-link" id="back-to-flights-btn">← Back to Flights</button>
+                <div class="flight-flight-badge" id="seat-flight-summary">
+                    Flight 6E201 • DEL ➔ BOM
+                </div>
+            </div>
+
+            <div class="seat-view-grid">
+                <!-- Aircraft Cabin Blueprint -->
+                <div class="cabin-card glass-panel">
+                    <div class="cabin-header">
+                        <h3>Cabin Seat Map</h3>
+                        <div class="cabin-legend">
+                            <span class="legend-item"><span class="seat-chip available business"></span> Business</span>
+                            <span class="legend-item"><span class="seat-chip available economy"></span> Economy</span>
+                            <span class="legend-item"><span class="seat-chip occupied"></span> Occupied</span>
+                            <span class="legend-item"><span class="seat-chip selected"></span> Selected</span>
+                        </div>
+                    </div>
+
+                    <div class="aircraft-body">
+                        <div class="aircraft-nose">
+                            <div class="cockpit-window"></div>
+                        </div>
+
+                        <div class="cabin-rows" id="cabin-rows-container">
+                            <!-- Dynamic seat rows injected here -->
+                        </div>
+
+                        <div class="aircraft-tail"></div>
+                    </div>
+                </div>
+
+                <!-- Seat & Fare Summary Sidebar -->
+                <div class="fare-card glass-panel" id="fare-summary-card">
+                    <h3 class="fare-card-title">Booking Summary</h3>
+                    
+                    <div class="fare-flight-detail" id="fare-flight-details">
+                        <div class="fare-row">
+                            <span class="lbl">Flight</span>
+                            <span class="val" id="summary-flight-num">-</span>
+                        </div>
+                        <div class="fare-row">
+                            <span class="lbl">Route</span>
+                            <span class="val" id="summary-route">-</span>
+                        </div>
+                        <div class="fare-row">
+                            <span class="lbl">Departure</span>
+                            <span class="val" id="summary-departure-time">-</span>
+                        </div>
+                        <div class="fare-row">
+                            <span class="lbl">Selected Seat</span>
+                            <span class="val highlighted-seat" id="summary-seat-num">None</span>
+                        </div>
+                        <div class="fare-row">
+                            <span class="lbl">Seat Class</span>
+                            <span class="val" id="summary-seat-class">-</span>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <!-- Baggage Selection -->
+                    <div class="baggage-box">
+                        <label class="field-label">Included & Extra Baggage</label>
+                        <div class="baggage-options">
+                            <label class="baggage-radio selected">
+                                <input type="radio" name="baggage" value="15" checked>
+                                <div class="radio-content">
+                                    <span class="name">Standard 15 kg</span>
+                                    <span class="price">Included</span>
+                                </div>
+                            </label>
+                            <label class="baggage-radio">
+                                <input type="radio" name="baggage" value="20">
+                                <div class="radio-content">
+                                    <span class="name">+5 kg Extra (20kg)</span>
+                                    <span class="price">+₹750</span>
+                                </div>
+                            </label>
+                            <label class="baggage-radio">
+                                <input type="radio" name="baggage" value="25">
+                                <div class="radio-content">
+                                    <span class="name">+10 kg Extra (25kg)</span>
+                                    <span class="price">+₹1,400</span>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <hr class="divider">
+
+                    <!-- Price Breakdown -->
+                    <div class="price-breakdown">
+                        <div class="price-line">
+                            <span>Seat Base Fare</span>
+                            <span id="price-seat-val">₹0</span>
+                        </div>
+                        <div class="price-line">
+                            <span>Additional Baggage</span>
+                            <span id="price-baggage-val">₹0</span>
+                        </div>
+                        <div class="price-line">
+                            <span>Aviation Taxes & Fees (12%)</span>
+                            <span id="price-taxes-val">₹0</span>
+                        </div>
+                        <div class="price-total">
+                            <span>Total Payable</span>
+                            <span class="total-amount" id="price-total-val">₹0</span>
+                        </div>
+                    </div>
+
+                    <button class="btn-primary-lg" id="proceed-to-checkout-btn" disabled>
+                        Proceed to Passenger Details →
+                    </button>
+                    <p class="guarantee-note">🔒 Guaranteed instant reservation via Spring Boot API</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal: Checkout & Passenger Details -->
+    <div class="modal-overlay hidden" id="checkout-modal">
+        <div class="modal-box glass-panel modal-lg">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title">Passenger Information & Payment</h3>
+                    <p class="modal-subtitle">Complete your details to confirm your ticket</p>
+                </div>
+                <button class="modal-close-btn" id="close-checkout-modal">&times;</button>
+            </div>
+
+            <form id="checkout-form" class="checkout-form">
+                <div class="checkout-grid">
+                    <div class="form-section">
+                        <h4 class="section-subhead">1. Passenger Details</h4>
+                        <div class="grid-2">
+                            <div class="field-group">
+                                <label for="cust-first-name" class="field-label">First Name</label>
+                                <input type="text" id="cust-first-name" class="custom-input" placeholder="e.g. Aarav" required>
+                            </div>
+                            <div class="field-group">
+                                <label for="cust-last-name" class="field-label">Last Name</label>
+                                <input type="text" id="cust-last-name" class="custom-input" placeholder="e.g. Sharma" required>
+                            </div>
+                        </div>
+
+                        <div class="grid-2">
+                            <div class="field-group">
+                                <label for="cust-email" class="field-label">Email Address</label>
+                                <input type="email" id="cust-email" class="custom-input" placeholder="aarav@gmail.com" required>
+                            </div>
+                            <div class="field-group">
+                                <label for="cust-phone" class="field-label">Phone Number</label>
+                                <input type="tel" id="cust-phone" class="custom-input" placeholder="+91 9876543210" required>
+                            </div>
+                        </div>
+
+                        <div class="field-group">
+                            <label for="cust-passport" class="field-label">Passport / National ID</label>
+                            <input type="text" id="cust-passport" class="custom-input" placeholder="A1234567" required>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h4 class="section-subhead">2. Payment Method</h4>
+                        <div class="payment-method-selector">
+                            <label class="pay-option selected">
+                                <input type="radio" name="payment-method" value="CREDIT_CARD" checked>
+                                <span>💳 Credit / Debit Card</span>
+                            </label>
+                            <label class="pay-option">
+                                <input type="radio" name="payment-method" value="UPI">
+                                <span>📱 UPI / QR Code</span>
+                            </label>
+                            <label class="pay-option">
+                                <input type="radio" name="payment-method" value="NET_BANKING">
+                                <span>🏦 Net Banking</span>
+                            </label>
+                        </div>
+
+                        <!-- Card details inputs -->
+                        <div id="card-fields" class="pay-fields">
+                            <div class="field-group">
+                                <label class="field-label">Card Number</label>
+                                <input type="text" class="custom-input" placeholder="4111 2222 3333 4444" value="4532 •••• •••• 8821">
+                            </div>
+                            <div class="grid-2">
+                                <div class="field-group">
+                                    <label class="field-label">Expiry (MM/YY)</label>
+                                    <input type="text" class="custom-input" placeholder="08/28" value="12/28">
+                                </div>
+                                <div class="field-group">
+                                    <label class="field-label">CVV</label>
+                                    <input type="password" class="custom-input" placeholder="•••" value="892">
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Final Amount Banner -->
+                        <div class="checkout-summary-banner">
+                            <span>Amount to Pay:</span>
+                            <span class="banner-total" id="modal-total-display">₹0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn-outline" id="cancel-checkout-btn">Back</button>
+                    <button type="submit" class="btn-primary-lg" id="submit-booking-btn">
+                        <span id="btn-pay-text">Pay & Generate Boarding Pass</span>
+                        <span class="btn-spinner hidden" id="pay-spinner"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: Boarding Pass & Confirmation -->
+    <div class="modal-overlay hidden" id="boarding-pass-modal">
+        <div class="modal-box glass-panel modal-lg">
+            <div class="modal-header">
+                <div>
+                    <span class="success-pill">✓ Booking Confirmed</span>
+                    <h3 class="modal-title">Official E-Ticket & Boarding Pass</h3>
+                </div>
+                <button class="modal-close-btn" id="close-ticket-modal">&times;</button>
+            </div>
+
+            <!-- Luxury Boarding Pass Component -->
+            <div class="boarding-pass-card" id="printable-boarding-pass">
+                <div class="pass-main">
+                    <div class="pass-top">
+                        <div class="pass-brand">
+                            <span class="pass-logo">✈</span>
+                            <span class="pass-airline" id="pass-airline-name">IndiGo Airlines</span>
+                        </div>
+                        <div class="pass-class-badge" id="pass-cabin-class">ECONOMY CLASS</div>
+                    </div>
+
+                    <div class="pass-route">
+                        <div class="route-city">
+                            <span class="city-code" id="pass-origin-code">DEL</span>
+                            <span class="city-name" id="pass-origin-city">New Delhi</span>
+                        </div>
+                        <div class="route-plane">
+                            <span class="flight-duration" id="pass-duration">2h 15m</span>
+                            <div class="flight-line">
+                                <span>✈</span>
+                            </div>
+                            <span class="flight-status">NON-STOP</span>
+                        </div>
+                        <div class="route-city right">
+                            <span class="city-code" id="pass-dest-code">BOM</span>
+                            <span class="city-name" id="pass-dest-city">Mumbai</span>
+                        </div>
+                    </div>
+
+                    <div class="pass-info-grid">
+                        <div class="info-cell">
+                            <span class="cell-label">PASSENGER NAME</span>
+                            <span class="cell-val" id="pass-passenger-name">Aarav Sharma</span>
+                        </div>
+                        <div class="info-cell">
+                            <span class="cell-label">FLIGHT NO.</span>
+                            <span class="cell-val" id="pass-flight-number">6E201</span>
+                        </div>
+                        <div class="info-cell">
+                            <span class="cell-label">DEPARTURE</span>
+                            <span class="cell-val" id="pass-departure-time">06:30 AM</span>
+                        </div>
+                        <div class="info-cell">
+                            <span class="cell-label">DATE</span>
+                            <span class="cell-val" id="pass-flight-date">Tomorrow</span>
+                        </div>
+                        <div class="info-cell">
+                            <span class="cell-label">BOARDING TIME</span>
+                            <span class="cell-val" id="pass-boarding-time">05:45 AM</span>
+                        </div>
+                        <div class="info-cell">
+                            <span class="cell-label">TERMINAL / GATE</span>
+                            <span class="cell-val">T3 / Gate B4</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pass-divider">
+                    <div class="notch top"></div>
+                    <div class="dashed-line"></div>
+                    <div class="notch bottom"></div>
+                </div>
+
+                <div class="pass-stub">
+                    <div class="stub-header">
+                        <span class="stub-pnr-lbl">BOOKING REF / PNR</span>
+                        <span class="stub-pnr-val" id="pass-pnr-code">AMS8F2</span>
+                    </div>
+
+                    <div class="stub-seat-box">
+                        <span class="stub-seat-lbl">SEAT</span>
+                        <span class="stub-seat-val" id="pass-seat-number">3A</span>
+                    </div>
+
+                    <div class="barcode-container">
+                        <div class="simulated-barcode"></div>
+                        <span class="barcode-text" id="pass-ticket-id">ETKT-10829374</span>
+                    </div>
+
+                    <div class="stub-status-pill">PAID & ISSUED</div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button class="btn-outline" onclick="window.print()">🖨️ Print / Save PDF</button>
+                <button class="btn-primary-md" id="view-my-bookings-now-btn">View My Bookings</button>
+                <button class="btn-outline" id="book-another-flight-btn">Book Another Flight</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Auth (Sign In / Register) -->
+    <div class="modal-overlay hidden" id="auth-modal">
+        <div class="modal-box glass-panel modal-sm">
+            <div class="modal-header">
+                <h3 class="modal-title" id="auth-modal-title">Sign In to AeroSkyline</h3>
+                <button class="modal-close-btn" id="close-auth-modal">&times;</button>
+            </div>
+
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="tab-login">Sign In</button>
+                <button class="auth-tab" id="tab-register">Register</button>
+            </div>
+
+            <!-- Login Form -->
+            <form id="login-form" class="auth-form">
+                <div class="field-group">
+                    <label class="field-label">Email Address</label>
+                    <input type="email" id="login-email" class="custom-input" placeholder="aarav@gmail.com" value="aarav@gmail.com" required>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Password</label>
+                    <input type="password" id="login-password" class="custom-input" placeholder="••••••••" value="Password@123" required>
+                </div>
+                <div class="demo-account-hint">
+                    💡 <strong>Demo Creds:</strong> aarav@gmail.com / Password@123
+                </div>
+                <button type="submit" class="btn-primary-lg" id="login-submit-btn">Sign In</button>
+            </form>
+
+            <!-- Register Form -->
+            <form id="register-form" class="auth-form hidden">
+                <div class="grid-2">
+                    <div class="field-group">
+                        <label class="field-label">First Name</label>
+                        <input type="text" id="reg-first-name" class="custom-input" placeholder="Aarav" required>
+                    </div>
+                    <div class="field-group">
+                        <label class="field-label">Last Name</label>
+                        <input type="text" id="reg-last-name" class="custom-input" placeholder="Sharma" required>
+                    </div>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Email</label>
+                    <input type="email" id="reg-email" class="custom-input" placeholder="aarav@gmail.com" required>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Password</label>
+                    <input type="password" id="reg-password" class="custom-input" placeholder="Password@123" required>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Phone</label>
+                    <input type="tel" id="reg-phone" class="custom-input" placeholder="+91 9876543210" required>
+                </div>
+                <div class="field-group">
+                    <label class="field-label">Passport No.</label>
+                    <input type="text" id="reg-passport" class="custom-input" placeholder="K8291034" required>
+                </div>
+                <button type="submit" class="btn-primary-lg" id="register-submit-btn">Create Account</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal: My Bookings Drawer -->
+    <div class="modal-overlay hidden" id="bookings-modal">
+        <div class="modal-box glass-panel modal-lg">
+            <div class="modal-header">
+                <div>
+                    <h3 class="modal-title">My Bookings & Reservations</h3>
+                    <p class="modal-subtitle">Manage your booked flights and boarding passes</p>
+                </div>
+                <button class="modal-close-btn" id="close-bookings-modal">&times;</button>
+            </div>
+
+            <div id="bookings-list-content">
+                <div class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading your reservations...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container" class="toast-container"></div>
+
+    <script src="app.js"></script>
+</body>
+</html>

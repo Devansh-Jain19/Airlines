@@ -1,0 +1,13 @@
+{
+  "name": "aeroskyline-web-frontend",
+  "version": "1.0.0",
+  "description": "Premium Web Frontend for Airlines Reservation System",
+  "main": "index.html",
+  "scripts": {
+    "start": "npx serve -p 3000 .",
+    "dev": "npx serve -p 3000 ."
+  },
+  "keywords": ["airline", "flight-booking", "frontend"],
+  "author": "",
+  "license": "ISC"
+}
