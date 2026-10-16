@@ -1,0 +1,2654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Airline Reservation System - UML Class Diagram</title>
+  <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js"></script>
+  <style>
+    :root {
+      --bg-primary: #0b0f19;
+      --bg-secondary: #111827;
+      --bg-card: #1e293b;
+      --border-color: #334155;
+      --border-highlight: #38bdf8;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent-blue: #38bdf8;
+      --accent-indigo: #818cf8;
+      --accent-purple: #c084fc;
+      --accent-emerald: #34d399;
+      --accent-amber: #fbbf24;
+      --accent-rose: #fb7185;
+      --font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* Top Navigation Bar */
+    header {
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border-color);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      z-index: 50;
+      flex-shrink: 0;
+    }
+
+    .brand-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-title .logo-icon {
+      width: 36px;
+      height: 36px;
+      background: linear-gradient(135deg, #0284c7, #38bdf8);
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 12px rgba(56, 189, 248, 0.25);
+    }
+
+    .brand-title h1 {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-title h1 span.badge {
+      font-size: 11px;
+      font-weight: 600;
+      padding: 2px 8px;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-blue);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-tabs {
+      display: flex;
+      gap: 4px;
+      background: #0f172a;
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--border-color);
+    }
+
+    .tab-btn {
+      padding: 6px 14px;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .tab-btn.active {
+      background: var(--bg-card);
+      color: var(--accent-blue);
+      font-weight: 600;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+
+    .search-box input {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      padding: 6px 12px 6px 32px;
+      color: #ffffff;
+      font-size: 13px;
+      width: 200px;
+      transition: all 0.2s;
+    }
+
+    .search-box input:focus {
+      outline: none;
+      border-color: var(--accent-blue);
+      width: 240px;
+      box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.2);
+    }
+
+    .search-box svg {
+      position: absolute;
+      left: 10px;
+      color: var(--text-muted);
+    }
+
+    .action-btn {
+      background: #1e293b;
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 6px 12px;
+      font-size: 13px;
+      border-radius: 6px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+
+    .action-btn:hover {
+      background: #334155;
+      border-color: #475569;
+    }
+
+    /* Main Container */
+    main {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+    }
+
+    .tab-content {
+      width: 100%;
+      height: 100%;
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+    }
+
+    .tab-content.active {
+      display: flex;
+    }
+
+    /* Canvas Viewport */
+    .viewport {
+      flex: 1;
+      height: 100%;
+      position: relative;
+      overflow: hidden;
+      background-image: 
+        radial-gradient(rgba(51, 65, 85, 0.3) 1px, transparent 1px),
+        radial-gradient(rgba(51, 65, 85, 0.15) 1px, transparent 1px);
+      background-size: 24px 24px, 120px 120px;
+      background-position: 0 0, 0 0;
+      cursor: grab;
+      user-select: none;
+    }
+
+    .viewport.dragging {
+      cursor: grabbing;
+    }
+
+    .canvas-world {
+      position: absolute;
+      top: 0;
+      left: 0;
+      transform-origin: 0 0;
+      will-change: transform;
+    }
+
+    /* Floating Canvas Controls */
+    .controls-overlay {
+      position: absolute;
+      bottom: 24px;
+      left: 24px;
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 6px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      z-index: 40;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    }
+
+    .control-btn {
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+
+    .control-btn:hover {
+      color: #ffffff;
+      background: rgba(255, 255, 255, 0.1);
+    }
+
+    .zoom-text {
+      font-size: 12px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      padding: 0 6px;
+      min-width: 48px;
+      text-align: center;
+    }
+
+    .legend-overlay {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(17, 24, 39, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px 16px;
+      z-index: 40;
+      max-width: 340px;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+    }
+
+    .legend-overlay h3 {
+      font-size: 13px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-blue);
+      margin-bottom: 8px;
+    }
+
+    .legend-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px 14px;
+      font-size: 12px;
+    }
+
+    .legend-entry {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--text-muted);
+    }
+
+    .symbol-pill {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: bold;
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: #1e293b;
+      border: 1px solid #475569;
+    }
+
+    /* Inspector Drawer */
+    .inspector {
+      width: 380px;
+      background: var(--bg-secondary);
+      border-left: 1px solid var(--border-color);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      z-index: 45;
+      transition: transform 0.3s ease;
+      box-shadow: -8px 0 24px rgba(0,0,0,0.4);
+    }
+
+    .inspector.closed {
+      transform: translateX(100%);
+      position: absolute;
+      right: 0;
+    }
+
+    .inspector-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(30, 41, 59, 0.5);
+    }
+
+    .inspector-header h2 {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .close-inspector {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      font-size: 20px;
+      line-height: 1;
+    }
+
+    .close-inspector:hover {
+      color: #ffffff;
+    }
+
+    .inspector-body {
+      padding: 20px;
+      overflow-y: auto;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .detail-card {
+      background: #1e293b;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .detail-card h4 {
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--accent-blue);
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .property-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+    }
+
+    .property-item {
+      display: flex;
+      justify-content: space-between;
+      padding: 4px 0;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.06);
+    }
+
+    .property-item:last-child {
+      border-bottom: none;
+    }
+
+    .prop-name {
+      color: var(--text-muted);
+    }
+
+    .prop-val {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: #e2e8f0;
+    }
+
+    .code-snippet {
+      background: #090d16;
+      border: 1px solid #1e293b;
+      border-radius: 6px;
+      padding: 10px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      color: #38bdf8;
+      overflow-x: auto;
+      white-space: pre;
+    }
+
+    /* SVG UML Styles */
+    svg.uml-canvas {
+      display: block;
+    }
+
+    .uml-class {
+      cursor: pointer;
+      transition: filter 0.2s;
+    }
+
+    .uml-class:hover {
+      filter: drop-shadow(0 0 12px rgba(56, 189, 248, 0.5));
+    }
+
+    .uml-class.selected .class-box {
+      stroke: #38bdf8 !important;
+      stroke-width: 2.5px !important;
+      filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.8));
+    }
+
+    .class-box {
+      fill: #1e293b;
+      stroke: #334155;
+      stroke-width: 1.5;
+      rx: 6;
+      ry: 6;
+    }
+
+    .class-header-bg {
+      fill: #0f172a;
+      stroke: #334155;
+      stroke-width: 1.5;
+    }
+
+    .class-header-bg.entity {
+      fill: #1e3a5f;
+      stroke: #2563eb;
+    }
+
+    .class-header-bg.enum {
+      fill: #3b1d60;
+      stroke: #9333ea;
+    }
+
+    .class-stereotype {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 10px;
+      font-style: italic;
+      fill: #94a3b8;
+      text-anchor: middle;
+    }
+
+    .class-title {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 14px;
+      font-weight: 700;
+      fill: #ffffff;
+      text-anchor: middle;
+    }
+
+    .class-table-tag {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      fill: #38bdf8;
+      text-anchor: middle;
+    }
+
+    .section-divider {
+      stroke: #334155;
+      stroke-width: 1;
+    }
+
+    .member-text {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      fill: #cbd5e1;
+    }
+
+    .visibility {
+      font-weight: bold;
+    }
+
+    .visibility.private {
+      fill: #f43f5e;
+    }
+
+    .visibility.public {
+      fill: #10b981;
+    }
+
+    .visibility.protected {
+      fill: #f59e0b;
+    }
+
+    .member-type {
+      fill: #38bdf8;
+    }
+
+    .connector {
+      fill: none;
+      stroke: #64748b;
+      stroke-width: 1.8;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      transition: stroke 0.2s, stroke-width 0.2s;
+    }
+
+    .connector.composition {
+      stroke: #38bdf8;
+    }
+
+    .connector.aggregation {
+      stroke: #818cf8;
+    }
+
+    .connector.association {
+      stroke: #94a3b8;
+    }
+
+    .connector.dependency {
+      stroke: #c084fc;
+      stroke-dasharray: 5, 4;
+    }
+
+    .connector:hover {
+      stroke: #f59e0b;
+      stroke-width: 3;
+    }
+
+    .mult-label {
+      font-family: var(--font-mono);
+      font-size: 11px;
+      font-weight: 700;
+      fill: #38bdf8;
+    }
+
+    .role-label {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      font-size: 10px;
+      fill: #94a3b8;
+      font-style: italic;
+    }
+
+    /* Subsystem Grouping Boundary */
+    .subsystem-boundary {
+      fill: rgba(30, 41, 59, 0.25);
+      stroke: #334155;
+      stroke-dasharray: 6 6;
+      stroke-width: 1.5;
+      rx: 12;
+      ry: 12;
+    }
+
+    .subsystem-label {
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      fill: #64748b;
+    }
+
+    /* Tab: Architecture View */
+    .arch-container {
+      flex: 1;
+      padding: 40px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+      align-items: center;
+    }
+
+    .arch-layer {
+      width: 100%;
+      max-width: 1100px;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 24px;
+      box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .arch-layer-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .layer-title {
+      font-size: 16px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .layer-tag {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      padding: 2px 8px;
+      border-radius: 4px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent-blue);
+    }
+
+    .arch-cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 14px;
+    }
+
+    .arch-item {
+      background: #0f172a;
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      padding: 12px;
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .arch-item:hover {
+      transform: translateY(-2px);
+      border-color: var(--accent-blue);
+    }
+
+    .arch-item-name {
+      font-weight: 600;
+      font-size: 13px;
+      color: #ffffff;
+      margin-bottom: 4px;
+    }
+
+    .arch-item-desc {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .layer-arrow {
+      color: var(--accent-blue);
+      font-size: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Tab: Mermaid Live & Code */
+    .mermaid-container {
+      flex: 1;
+      display: flex;
+      height: 100%;
+      overflow: hidden;
+    }
+
+    .mermaid-view {
+      flex: 1;
+      height: 100%;
+      overflow: auto;
+      padding: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      background: #090d16;
+    }
+
+    .mermaid-code-sidebar {
+      width: 440px;
+      background: var(--bg-secondary);
+      border-left: 1px solid var(--border-color);
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .sidebar-head {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--border-color);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .sidebar-head h3 {
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+
+    .mermaid-textarea {
+      flex: 1;
+      background: #0b0f19;
+      color: #93c5fd;
+      border: none;
+      padding: 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.5;
+      resize: none;
+      white-space: pre;
+      overflow-x: auto;
+    }
+
+    .mermaid-textarea:focus {
+      outline: none;
+    }
+
+    /* Tab: Data Dictionary */
+    .dictionary-container {
+      flex: 1;
+      padding: 30px 40px;
+      overflow-y: auto;
+    }
+
+    .dict-header {
+      margin-bottom: 24px;
+    }
+
+    .dict-header h2 {
+      font-size: 22px;
+      margin-bottom: 6px;
+      color: #ffffff;
+    }
+
+    .dict-table-wrap {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 8px;
+      overflow: hidden;
+      margin-bottom: 30px;
+    }
+
+    .dict-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      text-align: left;
+    }
+
+    .dict-table th {
+      background: #0f172a;
+      color: var(--accent-blue);
+      padding: 12px 16px;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-color);
+    }
+
+    .dict-table td {
+      padding: 10px 16px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      color: #cbd5e1;
+    }
+
+    .dict-table tr:hover td {
+      background: rgba(255, 255, 255, 0.02);
+    }
+
+    .dict-table td.mono {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #e2e8f0;
+    }
+
+    .badge-pk {
+      background: rgba(234, 179, 8, 0.2);
+      color: #fde047;
+      border: 1px solid rgba(234, 179, 8, 0.4);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    .badge-fk {
+      background: rgba(56, 189, 248, 0.2);
+      color: #38bdf8;
+      border: 1px solid rgba(56, 189, 248, 0.4);
+      padding: 1px 6px;
+      border-radius: 4px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    /* Toast Notification */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      background: #0284c7;
+      color: #ffffff;
+      padding: 10px 18px;
+      border-radius: 6px;
+      font-size: 13px;
+      font-weight: 500;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: all 0.2s ease;
+      z-index: 100;
+      pointer-events: none;
+    }
+
+    .toast.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation Bar -->
+  <header>
+    <div class="brand-title">
+      <div class="logo-icon">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2z"/>
+        </svg>
+      </div>
+      <div>
+        <h1>Airlines System <span class="badge">UML Class Diagram</span></h1>
+      </div>
+    </div>
+
+    <!-- View Mode Switcher -->
+    <div class="nav-tabs">
+      <button class="tab-btn active" onclick="switchTab('svg-view')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+        Interactive UML Canvas
+      </button>
+      <button class="tab-btn" onclick="switchTab('arch-view')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3Z"/></svg>
+        3-Tier Architecture
+      </button>
+      <button class="tab-btn" onclick="switchTab('mermaid-view')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="16 18 22 12 16 6"/><polyline points="8 6 2 12 8 18"/></svg>
+        Mermaid UML & Code
+      </button>
+      <button class="tab-btn" onclick="switchTab('dict-view')">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5v-15A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5Z"/><path d="M6 6h10"/><path d="M6 10h10"/></svg>
+        Class Specifications
+      </button>
+    </div>
+
+    <!-- Actions & Search -->
+    <div class="header-actions">
+      <div class="search-box">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        <input type="text" id="classSearch" placeholder="Find Class (e.g. Flight)..." oninput="handleSearch(this.value)">
+      </div>
+      <button class="action-btn" onclick="exportSVG()" title="Export Diagram as SVG">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" x2="12" y1="15" y2="3"/></svg>
+        Export SVG
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Viewports -->
+  <main>
+    <!-- TAB 1: SVG Interactive UML Canvas -->
+    <div id="svg-view" class="tab-content active">
+      <div class="viewport" id="viewport">
+        <!-- Floating Canvas Legend -->
+        <div class="legend-overlay">
+          <h3>UML Relationships Legend</h3>
+          <div class="legend-grid">
+            <div class="legend-entry">
+              <span class="symbol-pill" style="color: #38bdf8;">◆——</span>
+              <span>Composition (1:N)</span>
+            </div>
+            <div class="legend-entry">
+              <span class="symbol-pill" style="color: #818cf8;">◇——</span>
+              <span>Aggregation</span>
+            </div>
+            <div class="legend-entry">
+              <span class="symbol-pill" style="color: #94a3b8;">———▶</span>
+              <span>Association (FK)</span>
+            </div>
+            <div class="legend-entry">
+              <span class="symbol-pill" style="color: #c084fc;">- - -▶</span>
+              <span>Enum Dependency</span>
+            </div>
+            <div class="legend-entry">
+              <span class="symbol-pill" style="color: #f43f5e;">- prop</span>
+              <span>Private Field</span>
+            </div>
+            <div class="legend-entry">
+              <span class="symbol-pill" style="color: #10b981;">+ func()</span>
+              <span>Public Method</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Zoom / Pan Controls -->
+        <div class="controls-overlay">
+          <button class="control-btn" onclick="zoomIn()" title="Zoom In">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/><line x1="11" x2="11" y1="8" y2="14"/><line x1="8" x2="14" y1="11" y2="11"/></svg>
+          </button>
+          <span class="zoom-text" id="zoomLevel">100%</span>
+          <button class="control-btn" onclick="zoomOut()" title="Zoom Out">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" x2="16.65" y1="21" y2="16.65"/><line x1="8" x2="14" y1="11" y2="11"/></svg>
+          </button>
+          <button class="control-btn" onclick="resetZoom()" title="Reset View">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+          </button>
+          <button class="control-btn" onclick="fitToScreen()" title="Fit to Screen">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+          </button>
+        </div>
+
+        <!-- Canvas World Container -->
+        <div class="canvas-world" id="canvasWorld">
+          <svg id="umlCanvas" class="uml-canvas" width="2450" height="1520" viewBox="0 0 2450 1520" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <!-- Composition Marker (Solid Filled Diamond) -->
+              <marker id="composition-diamond" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+                <polygon points="2,7 7,3 12,7 7,11" fill="#38bdf8" stroke="#0284c7" stroke-width="1.2" />
+              </marker>
+
+              <!-- Aggregation Marker (Hollow Diamond) -->
+              <marker id="aggregation-diamond" markerWidth="14" markerHeight="14" refX="12" refY="7" orient="auto">
+                <polygon points="2,7 7,3 12,7 7,11" fill="#1e293b" stroke="#818cf8" stroke-width="1.8" />
+              </marker>
+
+              <!-- Association Arrow Marker -->
+              <marker id="assoc-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+                <path d="M2,2 L10,6 L2,10" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" />
+              </marker>
+
+              <!-- Dependency Arrow Marker (Dashed Line Target) -->
+              <marker id="dep-arrow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
+                <path d="M2,2 L10,6 L2,10" fill="none" stroke="#c084fc" stroke-width="1.8" stroke-linecap="round" />
+              </marker>
+
+              <!-- Drop Shadows -->
+              <filter id="box-shadow" x="-8%" y="-8%" width="120%" height="120%">
+                <feDropShadow dx="0" dy="8" stdDeviation="6" flood-color="#000000" flood-opacity="0.45" />
+              </filter>
+            </defs>
+
+            <!-- ================= SUBSYSTEM BOUNDARIES ================= -->
+            <!-- Subsystem 1: Booking & Passenger Management -->
+            <rect class="subsystem-boundary" x="70" y="80" width="1180" height="880" />
+            <text class="subsystem-label" x="90" y="112">Subsystem: Passenger, Booking & Ticketing Domain</text>
+
+            <!-- Subsystem 2: Flight Operations & Airports -->
+            <rect class="subsystem-boundary" x="1290" y="80" width="1090" height="660" />
+            <text class="subsystem-label" x="1310" y="112">Subsystem: Flight Operations & Scheduling</text>
+
+            <!-- Subsystem 3: Fleet, Aircraft & Seating -->
+            <rect class="subsystem-boundary" x="850" y="990" width="1530" height="490" />
+            <text class="subsystem-label" x="870" y="1022">Subsystem: Fleet, Seating Layout & Airline Carrier</text>
+
+            <!-- Subsystem 4: Operations & Administration -->
+            <rect class="subsystem-boundary" x="70" y="990" width="740" height="490" />
+            <text class="subsystem-label" x="90" y="1022">Subsystem: Airline Staff & Administration</text>
+
+            <!-- ================= CONNECTORS & RELATIONSHIPS ================= -->
+            <g id="connectors-layer">
+              <!-- Passenger 1 ──< books >── 0..* Booking -->
+              <path class="connector association" d="M 370 280 L 490 280" marker-end="url(#assoc-arrow)" />
+              <text class="mult-label" x="382" y="272">1</text>
+              <text class="role-label" x="408" y="295">makes</text>
+              <text class="mult-label" x="465" y="272">0..*</text>
+
+              <!-- Booking 1 ◆──< contains >── 1..* Ticket -->
+              <path class="connector composition" d="M 780 280 L 900 280" marker-start="url(#composition-diamond)" />
+              <text class="mult-label" x="792" y="272">1</text>
+              <text class="role-label" x="815" y="295">contains</text>
+              <text class="mult-label" x="870" y="272">1..*</text>
+
+              <!-- Booking 1 ◆──< records >── 1..* Payment -->
+              <path class="connector composition" d="M 635 440 L 635 600" marker-start="url(#composition-diamond)" />
+              <text class="mult-label" x="645" y="465">1</text>
+              <text class="role-label" x="590" y="525">records</text>
+              <text class="mult-label" x="645" y="585">1..*</text>
+
+              <!-- Booking - - -> BookingStatus -->
+              <path class="connector dependency" d="M 730 440 L 730 480" marker-end="url(#dep-arrow)" />
+
+              <!-- Payment - - -> PaymentStatus -->
+              <path class="connector dependency" d="M 490 690 L 410 690" marker-end="url(#dep-arrow)" />
+
+              <!-- Ticket 1 ◆──< handles >── 0..* Baggage -->
+              <path class="connector composition" d="M 1045 440 L 1045 620" marker-start="url(#composition-diamond)" />
+              <text class="mult-label" x="1055" y="465">1</text>
+              <text class="role-label" x="1000" y="535">handles</text>
+              <text class="mult-label" x="1055" y="605">0..*</text>
+
+              <!-- Ticket - - -> TicketStatus -->
+              <path class="connector dependency" d="M 1160 440 L 1160 500" marker-end="url(#dep-arrow)" />
+
+              <!-- Flight 1 ──< issues >── 0..* Ticket -->
+              <path class="connector association" d="M 1320 280 L 1190 280" marker-end="url(#assoc-arrow)" />
+              <text class="mult-label" x="1295" y="272">1</text>
+              <text class="role-label" x="1230" y="295">issues</text>
+              <text class="mult-label" x="1205" y="272">0..*</text>
+
+              <!-- Flight 1 ──< associates >── 0..* Booking -->
+              <path class="connector association" d="M 1320 220 C 1100 130, 850 130, 780 220" marker-end="url(#assoc-arrow)" />
+              <text class="mult-label" x="1285" y="195">1</text>
+              <text class="role-label" x="1030" y="145">flight_id (FK)</text>
+              <text class="mult-label" x="795" y="195">0..*</text>
+
+              <!-- Flight - - -> FlightStatus -->
+              <path class="connector dependency" d="M 1480 470 L 1480 540" marker-end="url(#dep-arrow)" />
+
+              <!-- Flight * ──< departsFrom >── 1 Airport -->
+              <path class="connector association" d="M 1630 250 L 1800 250" marker-end="url(#assoc-arrow)" />
+              <text class="mult-label" x="1645" y="240">0..*</text>
+              <text class="role-label" x="1690" y="240">departureAirport</text>
+              <text class="mult-label" x="1775" y="240">1</text>
+
+              <!-- Flight * ──< arrivesAt >── 1 Airport -->
+              <path class="connector association" d="M 1630 320 C 1700 350, 1750 350, 1800 320" marker-end="url(#assoc-arrow)" />
+              <text class="mult-label" x="1645" y="345">0..*</text>
+              <text class="role-label" x="1700" y="365">arrivalAirport</text>
+              <text class="mult-label" x="1775" y="345">1</text>
+
+              <!-- Flight * ◇──< operatedBy >── 1 Aircraft -->
+              <path class="connector aggregation" d="M 1475 470 L 1475 1060" marker-start="url(#aggregation-diamond)" />
+              <text class="mult-label" x="1485" y="495">0..*</text>
+              <text class="role-label" x="1410" y="740">operatedBy</text>
+              <text class="mult-label" x="1485" y="1040">1</text>
+
+              <!-- Aircraft 1 ◆──< configuredWith >── 1..* Seat -->
+              <path class="connector composition" d="M 1340 1150 L 1180 1150" marker-start="url(#composition-diamond)" />
+              <text class="mult-label" x="1315" y="1140">1</text>
+              <text class="role-label" x="1225" y="1165">configuredWith</text>
+              <text class="mult-label" x="1195" y="1140">1..*</text>
+
+              <!-- Aircraft * ◇──< conformsTo >── 1 AircraftModel -->
+              <path class="connector aggregation" d="M 1630 1150 L 1750 1150" marker-start="url(#aggregation-diamond)" />
+              <text class="mult-label" x="1645" y="1140">0..*</text>
+              <text class="role-label" x="1665" y="1165">conformsTo</text>
+              <text class="mult-label" x="1725" y="1140">1</text>
+
+              <!-- Aircraft * ──< ownedBy >── 0..1 Airline -->
+              <path class="connector association" d="M 1600 1260 C 1600 1350, 1720 1350, 1750 1350" marker-end="url(#assoc-arrow)" />
+              <text class="mult-label" x="1610" y="1280">0..*</text>
+              <text class="role-label" x="1650" y="1370">airline_id</text>
+              <text class="mult-label" x="1725" y="1340">0..1</text>
+
+              <!-- Seat - - -> SeatClass -->
+              <path class="connector dependency" d="M 1045 1260 L 1045 1310" marker-end="url(#dep-arrow)" />
+
+              <!-- Ticket 0..* ──< assigns >── 0..1 Seat -->
+              <path class="connector association" d="M 1080 440 C 1120 700, 1080 850, 1080 1060" marker-end="url(#assoc-arrow)" />
+              <text class="mult-label" x="1090" y="465">0..*</text>
+              <text class="role-label" x="1105" y="780">assigned_seat</text>
+              <text class="mult-label" x="1090" y="1040">0..1</text>
+            </g>
+
+            <!-- ================= CLASSES (UML 3-COMPARTMENT BOXES) ================= -->
+
+            <!-- CLASS: Passenger -->
+            <g class="uml-class" id="node-Passenger" onclick="selectClass('Passenger')" transform="translate(100, 160)">
+              <rect class="class-box" filter="url(#box-shadow)" width="270" height="280" />
+              <!-- Header Compartment -->
+              <rect class="class-header-bg entity" width="270" height="52" rx="6" ry="6" />
+              <rect fill="#1e3a5f" y="46" width="270" height="6" />
+              <text class="class-stereotype" x="135" y="18">&lt;&lt;Entity&gt;&gt;</text>
+              <text class="class-title" x="135" y="34">Passenger</text>
+              <text class="class-table-tag" x="135" y="46">Table: passenger</text>
+              <line class="section-divider" x1="0" y1="52" x2="270" y2="52" />
+
+              <!-- Attributes Compartment -->
+              <g transform="translate(14, 70)">
+                <text class="member-text" y="0"><tspan class="visibility private">- </tspan>passengerId : <tspan class="member-type">Long</tspan> {PK}</text>
+                <text class="member-text" y="17"><tspan class="visibility private">- </tspan>firstName : <tspan class="member-type">String</tspan> [50]</text>
+                <text class="member-text" y="34"><tspan class="visibility private">- </tspan>lastName : <tspan class="member-type">String</tspan> [50]</text>
+                <text class="member-text" y="51"><tspan class="visibility private">- </tspan>email : <tspan class="member-type">String</tspan> {unique}</text>
+                <text class="member-text" y="68"><tspan class="visibility private">- </tspan>password : <tspan class="member-type">String</tspan> [255]</text>
+                <text class="member-text" y="85"><tspan class="visibility private">- </tspan>phone : <tspan class="member-type">String</tspan> [20]</text>
+                <text class="member-text" y="102"><tspan class="visibility private">- </tspan>passportNumber : <tspan class="member-type">String</tspan></text>
+                <text class="member-text" y="119"><tspan class="visibility private">- </tspan>dateOfBirth : <tspan class="member-type">LocalDate</tspan></text>
+                <text class="member-text" y="136"><tspan class="visibility private">- </tspan>gender : <tspan class="member-type">String</tspan> [10]</text>
+              </g>
+              <line class="section-divider" x1="0" y1="216" x2="270" y2="216" />
+
+              <!-- Operations Compartment -->
+              <g transform="translate(14, 234)">
+                <text class="member-text" y="0"><tspan class="visibility public">+ </tspan>getPassengerId() : <tspan class="member-type">Long</tspan></text>
+                <text class="member-text" y="16"><tspan class="visibility public">+ </tspan>getEmail() : <tspan class="member-type">String</tspan></text>
+                <text class="member-text" y="32"><tspan class="visibility public">+ </tspan>getters / setters()</text>
+              </g>
+            </g>
+
+            <!-- CLASS: Booking -->
+            <g class="uml-class" id="node-Booking" onclick="selectClass('Booking')" transform="translate(490, 160)">
+              <rect class="class-box" filter="url(#box-shadow)" width="290" height="280" />
+              <!-- Header Compartment -->
+              <rect class="class-header-bg entity" width="290" height="52" rx="6" ry="6" />
+              <rect fill="#1e3a5f" y="46" width="290" height="6" />
+              <text class="class-stereotype" x="145" y="18">&lt;&lt;Entity&gt;&gt;</text>
+              <text class="class-title" x="145" y="34">Booking</text>
+              <text class="class-table-tag" x="145" y="46">Table: booking</text>
+              <line class="section-divider" x1="0" y1="52" x2="290" y2="52" />
+
+              <!-- Attributes Compartment -->
+              <g transform="translate(14, 70)">
+                <text class="member-text" y="0"><tspan class="visibility private">- </tspan>bookingId : <tspan class="member-type">Long</tspan> {PK}</text>
+                <text class="member-text" y="17"><tspan class="visibility private">- </tspan>bookingReference : <tspan class="member-type">String</tspan> [6] {UQ}</text>
+                <text class="member-text" y="34"><tspan class="visibility private">- </tspan>passenger : <tspan class="member-type">Passenger</tspan> {FK}</text>
+                <text class="member-text" y="51"><tspan class="visibility private">- </tspan>flight : <tspan class="member-type">Flight</tspan> {FK}</text>
+                <text class="member-text" y="68"><tspan class="visibility private">- </tspan>bookingDate : <tspan class="member-type">LocalDateTime</tspan></text>
+                <text class="member-text" y="85"><tspan class="visibility private">- </tspan>status : <tspan class="member-type">BookingStatus</tspan></text>
+                <text class="member-text" y="102"><tspan class="visibility private">- </tspan>totalAmount : <tspan class="member-type">BigDecimal</tspan></text>
+              </g>
+              <line class="section-divider" x1="0" y1="184" x2="290" y2="184" />
+
+              <!-- Operations Compartment -->
+              <g transform="translate(14, 204)">
+                <text class="member-text" y="0"><tspan class="visibility public">+ </tspan>getBookingReference() : <tspan class="member-type">String</tspan></text>
+                <text class="member-text" y="16"><tspan class="visibility public">+ </tspan>getStatus() : <tspan class="member-type">BookingStatus</tspan></text>
+                <text class="member-text" y="32"><tspan class="visibility public">+ </tspan>getTotalAmount() : <tspan class="member-type">BigDecimal</tspan></text>
+                <text class="member-text" y="48"><tspan class="visibility public">+ </tspan>setStatus(status) : <tspan class="member-type">void</tspan></text>
+                <text class="member-text" y="64"><tspan class="visibility public">+ </tspan>getters / setters()</text>
+              </g>
+            </g>
+
+            <!-- ENUM: BookingStatus -->
+            <g class="uml-class" id="node-BookingStatus" onclick="selectClass('BookingStatus')" transform="translate(670, 480)">
+              <rect class="class-box" filter="url(#box-shadow)" width="180" height="110" />
+              <rect class="class-header-bg enum" width="180" height="42" rx="6" ry="6" />
+              <rect fill="#3b1d60" y="36" width="180" height="6" />
+              <text class="class-stereotype" x="90" y="16">&lt;&lt;Enumeration&gt;&gt;</text>
+              <text class="class-title" x="90" y="32" style="font-size: 13px;">BookingStatus</text>
+              <line class="section-divider" x1="0" y1="42" x2="180" y2="42" />
+              <g transform="translate(14, 60)">
+                <text class="member-text" y="0">+ PENDING</text>
+                <text class="member-text" y="16">+ CONFIRMED</text>
+                <text class="member-text" y="32">+ CANCELLED</text>
+              </g>
+            </g>
+
+            <!-- CLASS: Payment -->
+            <g class="uml-class" id="node-Payment" onclick="selectClass('Payment')" transform="translate(490, 600)">
+              <rect class="class-box" filter="url(#box-shadow)" width="290" height="260" />
+              <rect class="class-header-bg entity" width="290" height="52" rx="6" ry="6" />
+              <rect fill="#1e3a5f" y="46" width="290" height="6" />
+              <text class="class-stereotype" x="145" y="18">&lt;&lt;Entity&gt;&gt;</text>
+              <text class="class-title" x="145" y="34">Payment</text>
+              <text class="class-table-tag" x="145" y="46">Table: payment</text>
+              <line class="section-divider" x1="0" y1="52" x2="290" y2="52" />
+
+              <!-- Attributes Compartment -->
+              <g transform="translate(14, 70)">
+                <text class="member-text" y="0"><tspan class="visibility private">- </tspan>paymentId : <tspan class="member-type">Long</tspan> {PK}</text>
+                <text class="member-text" y="17"><tspan class="visibility private">- </tspan>booking : <tspan class="member-type">Booking</tspan> {FK}</text>
+                <text class="member-text" y="34"><tspan class="visibility private">- </tspan>paymentMethod : <tspan class="member-type">String</tspan> [30]</text>
+                <text class="member-text" y="51"><tspan class="visibility private">- </tspan>amount : <tspan class="member-type">BigDecimal</tspan></text>
+                <text class="member-text" y="68"><tspan class="visibility private">- </tspan>status : <tspan class="member-type">PaymentStatus</tspan></text>
+                <text class="member-text" y="85"><tspan class="visibility private">- </tspan>transactionRef : <tspan class="member-type">String</tspan> [100]</text>
+                <text class="member-text" y="102"><tspan class="visibility private">- </tspan>paymentTime : <tspan class="member-type">LocalDateTime</tspan></text>
+              </g>
+              <line class="section-divider" x1="0" y1="184" x2="290" y2="184" />
+
+              <!-- Operations Compartment -->
+              <g transform="translate(14, 204)">
+                <text class="member-text" y="0"><tspan class="visibility public">+ </tspan>getPaymentId() : <tspan class="member-type">Long</tspan></text>
+                <text class="member-text" y="16"><tspan class="visibility public">+ </tspan>getAmount() : <tspan class="member-type">BigDecimal</tspan></text>
+                <text class="member-text" y="32"><tspan class="visibility public">+ </tspan>getTransactionRef() : <tspan class="member-type">String</tspan></text>
+                <text class="member-text" y="48"><tspan class="visibility public">+ </tspan>getters / setters()</text>
+              </g>
+            </g>
+
+            <!-- ENUM: PaymentStatus -->
+            <g class="uml-class" id="node-PaymentStatus" onclick="selectClass('PaymentStatus')" transform="translate(230, 640)">
+              <rect class="class-box" filter="url(#box-shadow)" width="180" height="130" />
+              <rect class="class-header-bg enum" width="180" height="42" rx="6" ry="6" />
+              <rect fill="#3b1d60" y="36" width="180" height="6" />
+              <text class="class-stereotype" x="90" y="16">&lt;&lt;Enumeration&gt;&gt;</text>
+              <text class="class-title" x="90" y="32" style="font-size: 13px;">PaymentStatus</text>
+              <line class="section-divider" x1="0" y1="42" x2="180" y2="42" />
+              <g transform="translate(14, 60)">
+                <text class="member-text" y="0">+ PENDING</text>
+                <text class="member-text" y="16">+ COMPLETED</text>
+                <text class="member-text" y="32">+ FAILED</text>
+                <text class="member-text" y="48">+ REFUNDED</text>
+              </g>
+            </g>
+
+            <!-- CLASS: Ticket -->
+            <g class="uml-class" id="node-Ticket" onclick="selectClass('Ticket')" transform="translate(900, 160)">
+              <rect class="class-box" filter="url(#box-shadow)" width="290" height="280" />
+              <rect class="class-header-bg entity" width="290" height="52" rx="6" ry="6" />
+              <rect fill="#1e3a5f" y="46" width="290" height="6" />
+              <text class="class-stereotype" x="145" y="18">&lt;&lt;Entity&gt;&gt;</text>
+              <text class="class-title" x="145" y="34">Ticket</text>
+              <text class="class-table-tag" x="145" y="46">Table: ticket</text>
+              <line class="section-divider" x1="0" y1="52" x2="290" y2="52" />
+
+              <!-- Attributes Compartment -->
+              <g transform="translate(14, 70)">
+                <text class="member-text" y="0"><tspan class="visibility private">- </tspan>ticketId : <tspan class="member-type">Long</tspan> {PK}</text>
+                <text class="member-text" y="17"><tspan class="visibility private">- </tspan>ticketNumber : <tspan class="member-type">String</tspan> [50] {UQ}</text>
+                <text class="member-text" y="34"><tspan class="visibility private">- </tspan>booking : <tspan class="member-type">Booking</tspan> {FK}</text>
+                <text class="member-text" y="51"><tspan class="visibility private">- </tspan>flight : <tspan class="member-type">Flight</tspan> {FK}</text>
+                <text class="member-text" y="68"><tspan class="visibility private">- </tspan>seat : <tspan class="member-type">Seat</tspan> {FK}</text>
+                <text class="member-text" y="85"><tspan class="visibility private">- </tspan>fare : <tspan class="member-type">BigDecimal</tspan></text>
+                <text class="member-text" y="102"><tspan class="visibility private">- </tspan>status : <tspan class="member-type">TicketStatus</tspan></text>
+              </g>
+              <line class="section-divider" x1="0" y1="184" x2="290" y2="184" />
+
+              <!-- Operations Compartment -->
+              <g transform="translate(14, 204)">
+                <text class="member-text" y="0"><tspan class="visibility public">+ </tspan>getTicketNumber() : <tspan class="member-type">String</tspan></text>
+                <text class="member-text" y="16"><tspan class="visibility public">+ </tspan>getFare() : <tspan class="member-type">BigDecimal</tspan></text>
+                <text class="member-text" y="32"><tspan class="visibility public">+ </tspan>getStatus() : <tspan class="member-type">TicketStatus</tspan></text>
+                <text class="member-text" y="48"><tspan class="visibility public">+ </tspan>setStatus(status) : <tspan class="member-type">void</tspan></text>
+                <text class="member-text" y="64"><tspan class="visibility public">+ </tspan>getters / setters()</text>
+              </g>
+            </g>
+
+            <!-- ENUM: TicketStatus -->
+            <g class="uml-class" id="node-TicketStatus" onclick="selectClass('TicketStatus')" transform="translate(1090, 480)">
+              <rect class="class-box" filter="url(#box-shadow)" width="150" height="140" />
+              <rect class="class-header-bg enum" width="150" height="42" rx="6" ry="6" />
+              <rect fill="#3b1d60" y="36" width="150" height="6" />
+              <text class="class-stereotype" x="75" y="16">&lt;&lt;Enumeration&gt;&gt;</text>
+              <text class="class-title" x="75" y="32" style="font-size: 13px;">TicketStatus</text>
+              <line class="section-divider" x1="0" y1="42" x2="150" y2="42" />
+              <g transform="translate(14, 58)">
+                <text class="member-text" y="0">+ PENDING</text>
+                <text class="member-text" y="16">+ CONFIRMED</text>
+                <text class="member-text" y="32">+ CHECKED_IN</text>
+                <text class="member-text" y="48">+ CANCELLED</text>
+                <text class="member-text" y="64">+ BOARDED</text>
+              </g>
+            </g>
+
+            <!-- CLASS: Baggage -->
+            <g class="uml-class" id="node-Baggage" onclick="selectClass('Baggage')" transform="translate(930, 620)">
+              <rect class="class-box" filter="url(#box-shadow)" width="230" height="230" />
+              <rect class="class-header-bg entity" width="230" height="52" rx="6" ry="6" />
+              <rect fill="#1e3a5f" y="46" width="230" height="6" />
+              <text class="class-stereotype" x="115" y="18">&lt;&lt;Entity&gt;&gt;</text>
+              <text class="class-title" x="115" y="34">Baggage</text>
+              <text class="class-table-tag" x="115" y="46">Table: baggage</text>
+              <line class="section-divider" x1="0" y1="52" x2="230" y2="52" />
+
+              <!-- Attributes Compartment -->
+              <g transform="translate(14, 70)">
+                <text class="member-text" y="0"><tspan class="visibility private">- </tspan>baggageId : <tspan class="member-type">Long</tspan> {PK}</text>
+                <text class="member-text" y="17"><tspan class="visibility private">- </tspan>ticket : <tspan class="member-type">Ticket</tspan> {FK}</text>
+                <text class="member-text" y="34"><tspan class="visibility private">- </tspan>weightKg : <tspan class="member-type">Double</tspan></text>
+                <text class="member-text" y="51"><tspan class="visibility private">- </tspan>fee : <tspan class="member-type">BigDecimal</tspan></text>
+              </g>
+              <line class="section-divider" x1="0" y1="140" x2="230" y2="140" />
+
+              <!-- Operations Compartment -->
+              <g transform="translate(14, 160)">
+                <text class="member-text" y="0"><tspan class="visibility public">+ </tspan>getBaggageId() : <tspan class="member-type">Long</tspan></text>
+                <text class="member-text" y="16"><tspan class="visibility public">+ </tspan>getWeightKg() : <tspan class="member-type">Double</tspan></text>
+                <text class="member-text" y="32"><tspan class="visibility public">+ </tspan>getFee() : <tspan class="member-type">BigDecimal</tspan></text>
+                <text class="member-text" y="48"><tspan class="visibility public">+ </tspan>getters / setters()</text>
+              </g>
+            </g>
+
+            <!-- CLASS: Flight -->
+            <g class="uml-class" id="node-Flight" onclick="selectClass('Flight')" transform="translate(1320, 160)">
+              <rect class="class-box" filter="url(#box-shadow)" width="310" height="310" />
+              <rect class="class-header-bg entity" width="310" height="52" rx="6" ry="6" />
+              <rect fill="#1e3a5f" y="46" width="310" height="6" />
+              <text class="class-stereotype" x="155" y="18">&lt;&lt;Entity&gt;&gt;</text>
+              <text class="class-title" x="155" y="34">Flight</text>
+              <text class="class-table-tag" x="155" y="46">Table: flight</text>
+              <line class="section-divider" x1="0" y1="52" x2="310" y2="52" />
+
+              <!-- Attributes Compartment -->
+              <g transform="translate(14, 70)">
+                <text class="member-text" y="0"><tspan class="visibility private">- </tspan>flightId : <tspan class="member-type">Long</tspan> {PK}</text>
+                <text class="member-text" y="17"><tspan class="visibility private">- </tspan>flightNumber : <tspan class="member-type">String</tspan> [8]</text>
+                <text class="member-text" y="34"><tspan class="visibility private">- </tspan>aircraft : <tspan class="member-type">Aircraft</tspan> {FK}</text>
+                <text class="member-text" y="51"><tspan class="visibility private">- </tspan>departureAirport : <tspan class="member-type">Airport</tspan> {FK}</text>
+                <text class="member-text" y="68"><tspan class="visibility private">- </tspan>arrivalAirport : <tspan class="member-type">Airport</tspan> {FK}</text>
+                <text class="member-text" y="85"><tspan class="visibility private">- </tspan>departureTime : <tspan class="member-type">LocalDateTime</tspan></text>
+                <text class="member-text" y="102"><tspan class="visibility private">- </tspan>arrivalTime : <tspan class="member-type">LocalDateTime</tspan></text>
+                <text class="member-text" y="119"><tspan class="visibility private">- </tspan>basePrice : <tspan class="member-type">BigDecimal</tspan></text>
+                <text class="member-text" y="136"><tspan class="visibility private">- </tspan>status : <tspan class="member-type">FlightStatus</tspan></text>
+              </g>
+              <line class="section-divider" x1="0" y1="216" x2="310" y2="216" />
+
+              <!-- Operations Compartment -->
+              <g transform="translate(14, 234)">
+                <text class="member-text" y="0"><tspan class="visibility public">+ </tspan>getFlightNumber() : <tspan class="member-type">String</tspan></text>
+                <text class="member-text" y="16"><tspan class="visibility public">+ </tspan>getBasePrice() : <tspan class="member-type">BigDecimal</tspan></text>
+                <text class="member-text" y="32"><tspan class="visibility public">+ </tspan>getStatus() : <tspan class="member-type">FlightStatus</tspan></text>
+                <text class="member-text" y="48"><tspan class="visibility public">+ </tspan>setStatus(status) : <tspan class="member-type">void</tspan></text>
+                <text class="member-text" y="64"><tspan class="visibility public">+ </tspan>getters / setters()</text>
+              </g>
+            </g>
+
+            <!-- ENUM: FlightStatus -->
+            <g class="uml-class" id="node-FlightStatus" onclick="selectClass('FlightStatus')" transform="translate(1400, 520)">
+              <rect class="class-box" filter="url(#box-shadow)" width="160" height="150" />
+              <rect class="class-header-bg enum" width="160" height="42" rx="6" ry="6" />
+              <rect fill="#3b1d60" y="36" width="160" height="6" />
+              <text class="class-stereotype" x="80" y="16">&lt;&lt;Enumeration&gt;&gt;</text>
+              <text class="class-title" x="80" y="32" style="font-size: 13px;">FlightStatus</text>
+              <line class="section-divider" x1="0" y1="42" x2="160" y2="42" />
+              <g transform="translate(14, 58)">
+                <text class="member-text" y="0">+ SCHEDULED</text>
+                <text class="member-text" y="16">+ DELAYED</text>
+                <text class="member-text" y="32">+ BOARDING</text>
+                <text class="member-text" y="48">+ DEPARTED</text>
+                <text class="member-text" y="64">+ ARRIVED</text>
+                <text class="member-text" y="80">+ CANCELLED</text>
+              </g>
+            </g>
+
+            <!-- CLASS: Airport -->
+            <g class="uml-class" id="node-Airport" onclick="selectClass('Airport')" transform="translate(1800, 160)">
+              <rect class="class-box" filter="url(#box-shadow)" width="260" height="240" />
+              <rect class="class-header-bg entity" width="260" height="52" rx="6" ry="6" />
+              <rect fill="#1e3a5f" y="46" width="260" height="6" />
+              <text class="class-stereotype" x="130" y="18">&lt;&lt;Entity&gt;&gt;</text>
+              <text class="class-title" x="130" y="34">Airport</text>
+              <text class="class-table-tag" x="130" y="46">Table: airport</text>
+              <line class="section-divider" x1="0" y1="52" x2="260" y2="52" />
+
+              <!-- Attributes Compartment -->
+              <g transform="translate(14, 70)">
+                <text class="member-text" y="0"><tspan class="visibility private">- </tspan>airportId : <tspan class="member-type">Long</tspan> {PK}</text>
+                <text class="member-text" y="17"><tspan class="visibility private">- </tspan>iataCode : <tspan class="member-type">String</tspan> [3] {UQ}</text>
+                <text class="member-text" y="34"><tspan class="visibility private">- </tspan>name : <tspan class="member-type">String</tspan> [100]</text>
+                <text class="member-text" y="51"><tspan class="visibility private">- </tspan>city : <tspan class="member-type">String</tspan> [50]</text>
+                <text class="member-text" y="68"><tspan class="visibility private">- </tspan>country : <tspan class="member-type">String</tspan> [50]</text>
+              </g>
+              <line class="section-divider" x1="0" y1="152" x2="260" y2="152" />
+
+              <!-- Operations Compartment -->
+              <g transform="translate(14, 172)">
+                <text class="member-text" y="0"><tspan class="visibility public">+ </tspan>Airport(iata, name, city, country)</text>
+                <text class="member-text" y="16"><tspan class="visibility public">+ </tspan>getIataCode() : <tspan class="member-type">String</tspan></text>
+                <text class="member-text" y="32"><tspan class="visibility public">+ </tspan>getName() : <tspan class="member-type">String</tspan></text>
+                <text class="member-text" y="48"><tspan class="visibility public">+ </tspan>getters / setters()</text>
+              </g>
+            </g>
+
+            <!-- CLASS: Seat -->
+            <g class="uml-class" id="node-Seat" onclick="selectClass('Seat')" transform="translate(930, 1060)">
+              <rect class="class-box" filter="url(#box-shadow)" width="250" height="210" />
+              <rect class="class-header-bg entity" width="250" height="52" rx="6" ry="6" />
+              <rect fill="#1e3a5f" y="46" width="250" height="6" />
+              <text class="class-stereotype" x="125" y="18">&lt;&lt;Entity&gt;&gt;</text>
+              <text class="class-title" x="125" y="34">Seat</text>
+              <text class="class-table-tag" x="125" y="46">Table: seat</text>
+              <line class="section-divider" x1="0" y1="52" x2="250" y2="52" />
+
+              <!-- Attributes Compartment -->
+              <g transform="translate(14, 70)">
+                <text class="member-text" y="0"><tspan class="visibility private">- </tspan>seatId : <tspan class="member-type">Long</tspan> {PK}</text>
+                <text class="member-text" y="17"><tspan class="visibility private">- </tspan>seatNumber : <tspan class="member-type">String</tspan> [5]</text>
+                <text class="member-text" y="34"><tspan class="visibility private">- </tspan>seatClass : <tspan class="member-type">SeatClass</tspan></text>
+                <text class="member-text" y="51"><tspan class="visibility private">- </tspan>aircraft : <tspan class="member-type">Aircraft</tspan> {FK}</text>
+              </g>
+              <line class="section-divider" x1="0" y1="135" x2="250" y2="135" />
+
+              <!-- Operations Compartment -->
+              <g transform="translate(14, 155)">
+                <text class="member-text" y="0"><tspan class="visibility public">+ </tspan>Seat(number, class, aircraft)</text>
+                <text class="member-text" y="16"><tspan class="visibility public">+ </tspan>getSeatNumber() : <tspan class="member-type">String</tspan></text>
+                <text class="member-text" y="32"><tspan class="visibility public">+ </tspan>getSeatClass() : <tspan class="member-type">SeatClass</tspan></text>
+              </g>
+            </g>
+
+            <!-- ENUM: SeatClass -->
+            <g class="uml-class" id="node-SeatClass" onclick="selectClass('SeatClass')" transform="translate(970, 1310)">
+              <rect class="class-box" filter="url(#box-shadow)" width="170" height="130" />
+              <rect class="class-header-bg enum" width="170" height="42" rx="6" ry="6" />
+              <rect fill="#3b1d60" y="36" width="170" height="6" />
+              <text class="class-stereotype" x="85" y="16">&lt;&lt;Enumeration&gt;&gt;</text>
+              <text class="class-title" x="85" y="32" style="font-size: 13px;">SeatClass</text>
+              <line class="section-divider" x1="0" y1="42" x2="170" y2="42" />
+              <g transform="translate(14, 58)">
+                <text class="member-text" y="0">+ ECONOMY</text>
+                <text class="member-text" y="16">+ PREMIUM_ECONOMY</text>
+                <text class="member-text" y="32">+ BUSINESS</text>
+                <text class="member-text" y="48">+ FIRST</text>
+              </g>
+            </g>
+
+            <!-- CLASS: Aircraft -->
+            <g class="uml-class" id="node-Aircraft" onclick="selectClass('Aircraft')" transform="translate(1340, 1060)">
+              <rect class="class-box" filter="url(#box-shadow)" width="290" height="230" />
+              <rect class="class-header-bg entity" width="290" height="52" rx="6" ry="6" />
+              <rect fill="#1e3a5f" y="46" width="290" height="6" />
+              <text class="class-stereotype" x="145" y="18">&lt;&lt;Entity&gt;&gt;</text>
+              <text class="class-title" x="145" y="34">Aircraft</text>
+              <text class="class-table-tag" x="145" y="46">Table: aircraft</text>
+              <line class="section-divider" x1="0" y1="52" x2="290" y2="52" />
+
+              <!-- Attributes Compartment -->
+              <g transform="translate(14, 70)">
+                <text class="member-text" y="0"><tspan class="visibility private">- </tspan>aircraftId : <tspan class="member-type">Long</tspan> {PK}</text>
+                <text class="member-text" y="17"><tspan class="visibility private">- </tspan>registrationNumber : <tspan class="member-type">String</tspan> {UQ}</text>
+                <text class="member-text" y="34"><tspan class="visibility private">- </tspan>aircraftModel : <tspan class="member-type">AircraftModel</tspan> {FK}</text>
+                <text class="member-text" y="51"><tspan class="visibility private">- </tspan>airline : <tspan class="member-type">Airline</tspan> {FK}</text>
+              </g>
+              <line class="section-divider" x1="0" y1="135" x2="290" y2="135" />
+
+              <!-- Operations Compartment -->
+              <g transform="translate(14, 155)">
+                <text class="member-text" y="0"><tspan class="visibility public">+ </tspan>Aircraft(regNum, model, airline)</text>
+                <text class="member-text" y="16"><tspan class="visibility public">+ </tspan>getRegistrationNumber() : <tspan class="member-type">String</tspan></text>
+                <text class="member-text" y="32"><tspan class="visibility public">+ </tspan>getAircraftModel() : <tspan class="member-type">AircraftModel</tspan></text>
+                <text class="member-text" y="48"><tspan class="visibility public">+ </tspan>getters / setters()</text>
+              </g>
+            </g>
+
+            <!-- CLASS: AircraftModel -->
+            <g class="uml-class" id="node-AircraftModel" onclick="selectClass('AircraftModel')" transform="translate(1750, 1060)">
+              <rect class="class-box" filter="url(#box-shadow)" width="260" height="210" />
+              <rect class="class-header-bg entity" width="260" height="52" rx="6" ry="6" />
+              <rect fill="#1e3a5f" y="46" width="260" height="6" />
+              <text class="class-stereotype" x="130" y="18">&lt;&lt;Entity&gt;&gt;</text>
+              <text class="class-title" x="130" y="34">AircraftModel</text>
+              <text class="class-table-tag" x="130" y="46">Table: aircraft_model</text>
+              <line class="section-divider" x1="0" y1="52" x2="260" y2="52" />
+
+              <!-- Attributes Compartment -->
+              <g transform="translate(14, 70)">
+                <text class="member-text" y="0"><tspan class="visibility private">- </tspan>modelId : <tspan class="member-type">Long</tspan> {PK}</text>
+                <text class="member-text" y="17"><tspan class="visibility private">- </tspan>manufacturer : <tspan class="member-type">String</tspan> [50]</text>
+                <text class="member-text" y="34"><tspan class="visibility private">- </tspan>modelName : <tspan class="member-type">String</tspan> [50]</text>
+                <text class="member-text" y="51"><tspan class="visibility private">- </tspan>capacity : <tspan class="member-type">Integer</tspan></text>
+              </g>
+              <line class="section-divider" x1="0" y1="135" x2="260" y2="135" />
+
+              <!-- Operations Compartment -->
+              <g transform="translate(14, 155)">
+                <text class="member-text" y="0"><tspan class="visibility public">+ </tspan>AircraftModel(mfg, name, cap)</text>
+                <text class="member-text" y="16"><tspan class="visibility public">+ </tspan>getCapacity() : <tspan class="member-type">Integer</tspan></text>
+                <text class="member-text" y="32"><tspan class="visibility public">+ </tspan>getters / setters()</text>
+              </g>
+            </g>
+
+            <!-- CLASS: Airline -->
+            <g class="uml-class" id="node-Airline" onclick="selectClass('Airline')" transform="translate(1750, 1290)">
+              <rect class="class-box" filter="url(#box-shadow)" width="260" height="170" />
+              <rect class="class-header-bg entity" width="260" height="52" rx="6" ry="6" />
+              <rect fill="#1e3a5f" y="46" width="260" height="6" />
+              <text class="class-stereotype" x="130" y="18">&lt;&lt;Entity&gt;&gt;</text>
+              <text class="class-title" x="130" y="34">Airline</text>
+              <text class="class-table-tag" x="130" y="46">Table: airline</text>
+              <line class="section-divider" x1="0" y1="52" x2="260" y2="52" />
+
+              <!-- Attributes Compartment -->
+              <g transform="translate(14, 70)">
+                <text class="member-text" y="0"><tspan class="visibility private">- </tspan>airlineId : <tspan class="member-type">Long</tspan> {PK}</text>
+                <text class="member-text" y="17"><tspan class="visibility private">- </tspan>name : <tspan class="member-type">String</tspan> [100]</text>
+                <text class="member-text" y="34"><tspan class="visibility private">- </tspan>code : <tspan class="member-type">String</tspan> [3] {UQ}</text>
+                <text class="member-text" y="51"><tspan class="visibility private">- </tspan>country : <tspan class="member-type">String</tspan> [50]</text>
+              </g>
+              <line class="section-divider" x1="0" y1="130" x2="260" y2="130" />
+
+              <!-- Operations Compartment -->
+              <g transform="translate(14, 146)">
+                <text class="member-text" y="0"><tspan class="visibility public">+ </tspan>getCode() : <tspan class="member-type">String</tspan> | getters()</text>
+              </g>
+            </g>
+
+            <!-- CLASS: Employee -->
+            <g class="uml-class" id="node-Employee" onclick="selectClass('Employee')" transform="translate(100, 1060)">
+              <rect class="class-box" filter="url(#box-shadow)" width="270" height="210" />
+              <rect class="class-header-bg entity" width="270" height="52" rx="6" ry="6" />
+              <rect fill="#1e3a5f" y="46" width="270" height="6" />
+              <text class="class-stereotype" x="135" y="18">&lt;&lt;Entity&gt;&gt;</text>
+              <text class="class-title" x="135" y="34">Employee</text>
+              <text class="class-table-tag" x="135" y="46">Table: employee</text>
+              <line class="section-divider" x1="0" y1="52" x2="270" y2="52" />
+
+              <!-- Attributes Compartment -->
+              <g transform="translate(14, 70)">
+                <text class="member-text" y="0"><tspan class="visibility private">- </tspan>employeeId : <tspan class="member-type">Long</tspan> {PK}</text>
+                <text class="member-text" y="17"><tspan class="visibility private">- </tspan>firstName : <tspan class="member-type">String</tspan> [50]</text>
+                <text class="member-text" y="34"><tspan class="visibility private">- </tspan>lastName : <tspan class="member-type">String</tspan> [50]</text>
+                <text class="member-text" y="51"><tspan class="visibility private">- </tspan>role : <tspan class="member-type">String</tspan> [50]</text>
+                <text class="member-text" y="68"><tspan class="visibility private">- </tspan>email : <tspan class="member-type">String</tspan> {UQ}</text>
+              </g>
+              <line class="section-divider" x1="0" y1="145" x2="270" y2="145" />
+
+              <!-- Operations Compartment -->
+              <g transform="translate(14, 165)">
+                <text class="member-text" y="0"><tspan class="visibility public">+ </tspan>getRole() : <tspan class="member-type">String</tspan></text>
+                <text class="member-text" y="16"><tspan class="visibility public">+ </tspan>getEmail() : <tspan class="member-type">String</tspan></text>
+                <text class="member-text" y="32"><tspan class="visibility public">+ </tspan>getters / setters()</text>
+              </g>
+            </g>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Right Inspector Panel -->
+      <aside class="inspector" id="inspector">
+        <div class="inspector-header">
+          <h2 id="insTitle">Class Inspector</h2>
+          <button class="close-inspector" onclick="closeInspector()" title="Close Inspector">&times;</button>
+        </div>
+        <div class="inspector-body" id="insBody">
+          <p style="color: var(--text-muted); font-size: 13px;">Click on any class in the diagram to inspect its UML properties, JPA annotations, database mappings, and relationship navigations.</p>
+        </div>
+      </aside>
+    </div>
+
+    <!-- TAB 2: 3-Tier Layered Architecture View -->
+    <div id="arch-view" class="tab-content">
+      <div class="arch-container">
+        <!-- Layer 1: Presentation (Controllers) -->
+        <div class="arch-layer">
+          <div class="arch-layer-header">
+            <div class="layer-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" x2="16" y1="21" y2="21"/><line x1="12" x2="12" y1="17" y2="21"/></svg>
+              <span>Presentation Layer &mdash; Spring REST Controllers</span>
+            </div>
+            <span class="layer-tag">com.airline.controller</span>
+          </div>
+          <div class="arch-cards-grid">
+            <div class="arch-item">
+              <div class="arch-item-name">AuthController</div>
+              <div class="arch-item-desc">Handles passenger registration, login JWT generation & session validation.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">FlightController</div>
+              <div class="arch-item-desc">Endpoints for flight discovery, schedules, source/destination search & status.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">BookingController</div>
+              <div class="arch-item-desc">Manages multi-passenger reservation lifecycle, reference generation & lookups.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">PaymentController</div>
+              <div class="arch-item-desc">Processes payment transactions, gateway confirmation & status callbacks.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">TicketController</div>
+              <div class="arch-item-desc">Generates boarding tickets, seat assignments & baggage check-in fees.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">AirportController</div>
+              <div class="arch-item-desc">Airport catalog endpoints and IATA code auto-complete lookups.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">PassengerController</div>
+              <div class="arch-item-desc">User profile management, past bookings retrieval & identity credentials.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer-arrow">&darr; &nbsp; &darr; &nbsp; &darr;</div>
+
+        <!-- Layer 2: Service Business Logic -->
+        <div class="arch-layer">
+          <div class="arch-layer-header">
+            <div class="layer-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#818cf8" stroke-width="2"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              <span>Business Logic Layer &mdash; Transactional Services</span>
+            </div>
+            <span class="layer-tag">com.airline.service</span>
+          </div>
+          <div class="arch-cards-grid">
+            <div class="arch-item">
+              <div class="arch-item-name">BookingService</div>
+              <div class="arch-item-desc">Orchestrates transactions, auto-creates tickets, locks seats, calculates totals.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">FlightService</div>
+              <div class="arch-item-desc">Flight queries, seat capacity calculations & scheduling filters.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">PaymentService</div>
+              <div class="arch-item-desc">Executes transaction logic, updates booking status to CONFIRMED.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">AuthService</div>
+              <div class="arch-item-desc">BCrypt password verification, token issuance & passenger onboarding.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">TicketService</div>
+              <div class="arch-item-desc">Validates seat availability, assigns ticket barcodes & baggage tracking.</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">AirportService</div>
+              <div class="arch-item-desc">Cached airport directory search and geo-location lookups.</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="layer-arrow">&darr; &nbsp; &darr; &nbsp; &darr;</div>
+
+        <!-- Layer 3: Data Access (Repositories) -->
+        <div class="arch-layer">
+          <div class="arch-layer-header">
+            <div class="layer-title">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#34d399" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/><path d="M3 12c0 1.66 4 3 9 3s9-1.34 9-3"/></svg>
+              <span>Data Access Layer &mdash; Spring Data JPA Repositories</span>
+            </div>
+            <span class="layer-tag">com.airline.repository</span>
+          </div>
+          <div class="arch-cards-grid">
+            <div class="arch-item">
+              <div class="arch-item-name">FlightRepository</div>
+              <div class="arch-item-desc">findByDepartureAirportAndArrivalAirportAndDepartureTimeBetween(...)</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">BookingRepository</div>
+              <div class="arch-item-desc">findByBookingReference, findByPassenger_PassengerId</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">PassengerRepository</div>
+              <div class="arch-item-desc">findByEmail, existsByEmail, password verification</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">TicketRepository</div>
+              <div class="arch-item-desc">findByBooking_BookingId, findByFlight_FlightId</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">SeatRepository</div>
+              <div class="arch-item-desc">findByAircraft_AircraftId, findAvailableSeats</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">PaymentRepository</div>
+              <div class="arch-item-desc">findByBooking_BookingId, transaction logging</div>
+            </div>
+            <div class="arch-item">
+              <div class="arch-item-name">AirportRepository</div>
+              <div class="arch-item-desc">findByIataCode, searchByCityOrCountry</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 3: Mermaid Live Diagram & Code -->
+    <div id="mermaid-view" class="tab-content">
+      <div class="mermaid-container">
+        <div class="mermaid-view">
+          <div class="mermaid" id="mermaidTarget">
+classDiagram
+    direction TB
+    class Passenger {
+        -Long passengerId
+        -String firstName
+        -String lastName
+        -String email
+        -String password
+        -String phone
+        -String passportNumber
+        -LocalDate dateOfBirth
+        -String gender
+        +getPassengerId() Long
+        +getEmail() String
+    }
+    class Booking {
+        -Long bookingId
+        -String bookingReference
+        -LocalDateTime bookingDate
+        -BookingStatus status
+        -BigDecimal totalAmount
+        +getBookingReference() String
+        +getStatus() BookingStatus
+        +getTotalAmount() BigDecimal
+    }
+    class Flight {
+        -Long flightId
+        -String flightNumber
+        -LocalDateTime departureTime
+        -LocalDateTime arrivalTime
+        -BigDecimal basePrice
+        -FlightStatus status
+        +getFlightNumber() String
+        +getBasePrice() BigDecimal
+        +getStatus() FlightStatus
+    }
+    class Ticket {
+        -Long ticketId
+        -String ticketNumber
+        -BigDecimal fare
+        -TicketStatus status
+        +getTicketNumber() String
+        +getFare() BigDecimal
+        +getStatus() TicketStatus
+    }
+    class Baggage {
+        -Long baggageId
+        -Double weightKg
+        -BigDecimal fee
+        +getWeightKg() Double
+        +getFee() BigDecimal
+    }
+    class Payment {
+        -Long paymentId
+        -String paymentMethod
+        -BigDecimal amount
+        -PaymentStatus status
+        -String transactionRef
+        -LocalDateTime paymentTime
+        +getAmount() BigDecimal
+        +getStatus() PaymentStatus
+    }
+    class Airport {
+        -Long airportId
+        -String iataCode
+        -String name
+        -String city
+        -String country
+        +getIataCode() String
+        +getName() String
+    }
+    class Aircraft {
+        -Long aircraftId
+        -String registrationNumber
+        +getRegistrationNumber() String
+    }
+    class AircraftModel {
+        -Long modelId
+        -String manufacturer
+        -String modelName
+        -Integer capacity
+        +getCapacity() Integer
+    }
+    class Airline {
+        -Long airlineId
+        -String name
+        -String code
+        -String country
+        +getCode() String
+    }
+    class Seat {
+        -Long seatId
+        -String seatNumber
+        -SeatClass seatClass
+        +getSeatNumber() String
+        +getSeatClass() SeatClass
+    }
+    class Employee {
+        -Long employeeId
+        -String firstName
+        -String lastName
+        -String role
+        -String email
+        +getRole() String
+    }
+
+    class BookingStatus {
+        <<enumeration>>
+        PENDING
+        CONFIRMED
+        CANCELLED
+    }
+    class FlightStatus {
+        <<enumeration>>
+        SCHEDULED
+        DELAYED
+        BOARDING
+        DEPARTED
+        ARRIVED
+        CANCELLED
+    }
+    class PaymentStatus {
+        <<enumeration>>
+        PENDING
+        COMPLETED
+        FAILED
+        REFUNDED
+    }
+    class SeatClass {
+        <<enumeration>>
+        ECONOMY
+        PREMIUM_ECONOMY
+        BUSINESS
+        FIRST
+    }
+    class TicketStatus {
+        <<enumeration>>
+        PENDING
+        CONFIRMED
+        CHECKED_IN
+        CANCELLED
+        BOARDED
+    }
+
+    Passenger "1" --> "0..*" Booking : books
+    Booking "1" *-- "1..*" Ticket : contains
+    Booking "1" *-- "1..*" Payment : records
+    Flight "1" --> "0..*" Ticket : issues
+    Flight "1" --> "0..*" Booking : schedules
+    Ticket "1" *-- "0..*" Baggage : checks
+    Ticket "0..*" --> "0..1" Seat : allocates
+    Flight "0..*" --> "1" Airport : departureAirport
+    Flight "0..*" --> "1" Airport : arrivalAirport
+    Flight "0..*" o-- "1" Aircraft : operatedBy
+    Aircraft "1" *-- "1..*" Seat : configuredWith
+    Aircraft "0..*" o-- "1" AircraftModel : conformsTo
+    Aircraft "0..*" --> "0..1" Airline : ownedBy
+
+    Booking ..> BookingStatus : uses
+    Flight ..> FlightStatus : uses
+    Payment ..> PaymentStatus : uses
+    Ticket ..> TicketStatus : uses
+    Seat ..> SeatClass : uses
+          </div>
+        </div>
+        <div class="mermaid-code-sidebar">
+          <div class="sidebar-head">
+            <h3>Mermaid UML Source Code</h3>
+            <button class="action-btn" onclick="copyMermaidCode()">Copy Code</button>
+          </div>
+          <textarea class="mermaid-textarea" id="mermaidSrc" readonly></textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- TAB 4: Class Specification & Data Dictionary -->
+    <div id="dict-view" class="tab-content">
+      <div class="dictionary-container">
+        <div class="dict-header">
+          <h2>Domain Model Class Dictionary</h2>
+          <p style="color: var(--text-muted); font-size: 14px;">Detailed technical specification of entity classes, fields, JPA associations, and table constraints for the Airline Reservation System.</p>
+        </div>
+
+        <!-- Class 1: Passenger -->
+        <div class="dict-table-wrap">
+          <table class="dict-table">
+            <thead>
+              <tr>
+                <th colspan="5">Entity Class: Passenger &nbsp;|&nbsp; Package: com.airline.entity &nbsp;|&nbsp; Table: `passenger`</th>
+              </tr>
+              <tr>
+                <th>Field Name</th>
+                <th>Type</th>
+                <th>Constraint</th>
+                <th>JPA Annotation</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="mono">passengerId</td>
+                <td class="mono">Long</td>
+                <td><span class="badge-pk">PRIMARY KEY</span></td>
+                <td class="mono">@Id @GeneratedValue(IDENTITY)</td>
+                <td>Unique auto-incrementing passenger identifier</td>
+              </tr>
+              <tr>
+                <td class="mono">firstName</td>
+                <td class="mono">String</td>
+                <td>NOT NULL (50)</td>
+                <td class="mono">@Column(nullable = false, length = 50)</td>
+                <td>Passenger's given legal name</td>
+              </tr>
+              <tr>
+                <td class="mono">lastName</td>
+                <td class="mono">String</td>
+                <td>NOT NULL (50)</td>
+                <td class="mono">@Column(nullable = false, length = 50)</td>
+                <td>Passenger's family surname</td>
+              </tr>
+              <tr>
+                <td class="mono">email</td>
+                <td class="mono">String</td>
+                <td>UNIQUE, NOT NULL</td>
+                <td class="mono">@Column(unique = true, length = 100)</td>
+                <td>Login email address and notification target</td>
+              </tr>
+              <tr>
+                <td class="mono">password</td>
+                <td class="mono">String</td>
+                <td>NOT NULL (255)</td>
+                <td class="mono">@Column(nullable = false)</td>
+                <td>BCrypt salted password hash</td>
+              </tr>
+              <tr>
+                <td class="mono">phone</td>
+                <td class="mono">String</td>
+                <td>OPTIONAL (20)</td>
+                <td class="mono">@Column(length = 20)</td>
+                <td>International mobile contact number</td>
+              </tr>
+              <tr>
+                <td class="mono">passportNumber</td>
+                <td class="mono">String</td>
+                <td>OPTIONAL (20)</td>
+                <td class="mono">@Column(length = 20)</td>
+                <td>Travel passport number for international flights</td>
+              </tr>
+              <tr>
+                <td class="mono">dateOfBirth</td>
+                <td class="mono">LocalDate</td>
+                <td>OPTIONAL</td>
+                <td class="mono">@Column(name = "date_of_birth")</td>
+                <td>Age verification & infant/child fare calculation</td>
+              </tr>
+              <tr>
+                <td class="mono">gender</td>
+                <td class="mono">String</td>
+                <td>OPTIONAL (10)</td>
+                <td class="mono">@Column(length = 10)</td>
+                <td>Gender identity for flight passenger manifest</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Class 2: Flight -->
+        <div class="dict-table-wrap">
+          <table class="dict-table">
+            <thead>
+              <tr>
+                <th colspan="5">Entity Class: Flight &nbsp;|&nbsp; Package: com.airline.entity &nbsp;|&nbsp; Table: `flight`</th>
+              </tr>
+              <tr>
+                <th>Field Name</th>
+                <th>Type</th>
+                <th>Constraint</th>
+                <th>JPA Annotation</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="mono">flightId</td>
+                <td class="mono">Long</td>
+                <td><span class="badge-pk">PRIMARY KEY</span></td>
+                <td class="mono">@Id @GeneratedValue</td>
+                <td>Unique surrogate identifier</td>
+              </tr>
+              <tr>
+                <td class="mono">flightNumber</td>
+                <td class="mono">String</td>
+                <td>NOT NULL (8)</td>
+                <td class="mono">@Column(length = 8)</td>
+                <td>IATA flight code (e.g. AI-101, BA-249)</td>
+              </tr>
+              <tr>
+                <td class="mono">aircraft</td>
+                <td class="mono">Aircraft</td>
+                <td><span class="badge-fk">FOREIGN KEY</span></td>
+                <td class="mono">@ManyToOne @JoinColumn(aircraft_id)</td>
+                <td>Assigned physical aircraft executing this leg</td>
+              </tr>
+              <tr>
+                <td class="mono">departureAirport</td>
+                <td class="mono">Airport</td>
+                <td><span class="badge-fk">FOREIGN KEY</span></td>
+                <td class="mono">@ManyToOne(departure_airport_id)</td>
+                <td>Origin terminal airport station</td>
+              </tr>
+              <tr>
+                <td class="mono">arrivalAirport</td>
+                <td class="mono">Airport</td>
+                <td><span class="badge-fk">FOREIGN KEY</span></td>
+                <td class="mono">@ManyToOne(arrival_airport_id)</td>
+                <td>Destination terminal airport station</td>
+              </tr>
+              <tr>
+                <td class="mono">departureTime</td>
+                <td class="mono">LocalDateTime</td>
+                <td>NOT NULL</td>
+                <td class="mono">@Column(nullable = false)</td>
+                <td>Scheduled UTC departure timestamp</td>
+              </tr>
+              <tr>
+                <td class="mono">arrivalTime</td>
+                <td class="mono">LocalDateTime</td>
+                <td>NOT NULL</td>
+                <td class="mono">@Column(nullable = false)</td>
+                <td>Scheduled UTC arrival timestamp</td>
+              </tr>
+              <tr>
+                <td class="mono">basePrice</td>
+                <td class="mono">BigDecimal</td>
+                <td>PRECISION (10, 2)</td>
+                <td class="mono">@Column(precision = 10, scale = 2)</td>
+                <td>Baseline economy ticket fare before seat multiplier</td>
+              </tr>
+              <tr>
+                <td class="mono">status</td>
+                <td class="mono">FlightStatus</td>
+                <td>ENUM (STRING)</td>
+                <td class="mono">@Enumerated(EnumType.STRING)</td>
+                <td>Operational state: SCHEDULED, DELAYED, etc.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Class 3: Booking -->
+        <div class="dict-table-wrap">
+          <table class="dict-table">
+            <thead>
+              <tr>
+                <th colspan="5">Entity Class: Booking &nbsp;|&nbsp; Package: com.airline.entity &nbsp;|&nbsp; Table: `booking`</th>
+              </tr>
+              <tr>
+                <th>Field Name</th>
+                <th>Type</th>
+                <th>Constraint</th>
+                <th>JPA Annotation</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="mono">bookingId</td>
+                <td class="mono">Long</td>
+                <td><span class="badge-pk">PRIMARY KEY</span></td>
+                <td class="mono">@Id @GeneratedValue</td>
+                <td>Surrogate booking key</td>
+              </tr>
+              <tr>
+                <td class="mono">bookingReference</td>
+                <td class="mono">String</td>
+                <td>UNIQUE (6)</td>
+                <td class="mono">@Column(unique = true, length = 6)</td>
+                <td>6-character PNR code (e.g. BK7A91)</td>
+              </tr>
+              <tr>
+                <td class="mono">passenger</td>
+                <td class="mono">Passenger</td>
+                <td><span class="badge-fk">FOREIGN KEY</span></td>
+                <td class="mono">@ManyToOne(passenger_id)</td>
+                <td>Primary booker / account holder</td>
+              </tr>
+              <tr>
+                <td class="mono">flight</td>
+                <td class="mono">Flight</td>
+                <td><span class="badge-fk">FOREIGN KEY</span></td>
+                <td class="mono">@ManyToOne(flight_id)</td>
+                <td>Reserved flight departure leg</td>
+              </tr>
+              <tr>
+                <td class="mono">bookingDate</td>
+                <td class="mono">LocalDateTime</td>
+                <td>NOT NULL</td>
+                <td class="mono">@Column(nullable = false)</td>
+                <td>Booking reservation creation timestamp</td>
+              </tr>
+              <tr>
+                <td class="mono">status</td>
+                <td class="mono">BookingStatus</td>
+                <td>ENUM (STRING)</td>
+                <td class="mono">@Enumerated(EnumType.STRING)</td>
+                <td>PENDING, CONFIRMED, or CANCELLED</td>
+              </tr>
+              <tr>
+                <td class="mono">totalAmount</td>
+                <td class="mono">BigDecimal</td>
+                <td>PRECISION (10, 2)</td>
+                <td class="mono">@Column(precision = 10, scale = 2)</td>
+                <td>Aggregated price of all tickets + baggage fees</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Class 4: Ticket -->
+        <div class="dict-table-wrap">
+          <table class="dict-table">
+            <thead>
+              <tr>
+                <th colspan="5">Entity Class: Ticket &nbsp;|&nbsp; Package: com.airline.entity &nbsp;|&nbsp; Table: `ticket`</th>
+              </tr>
+              <tr>
+                <th>Field Name</th>
+                <th>Type</th>
+                <th>Constraint</th>
+                <th>JPA Annotation</th>
+                <th>Description</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="mono">ticketId</td>
+                <td class="mono">Long</td>
+                <td><span class="badge-pk">PRIMARY KEY</span></td>
+                <td class="mono">@Id @GeneratedValue</td>
+                <td>Surrogate ticket ID</td>
+              </tr>
+              <tr>
+                <td class="mono">ticketNumber</td>
+                <td class="mono">String</td>
+                <td>UNIQUE (50)</td>
+                <td class="mono">@Column(unique = true, length = 50)</td>
+                <td>E-ticket e-document barcode number</td>
+              </tr>
+              <tr>
+                <td class="mono">booking</td>
+                <td class="mono">Booking</td>
+                <td><span class="badge-fk">FOREIGN KEY</span></td>
+                <td class="mono">@ManyToOne(booking_id)</td>
+                <td>Parent booking order</td>
+              </tr>
+              <tr>
+                <td class="mono">flight</td>
+                <td class="mono">Flight</td>
+                <td><span class="badge-fk">FOREIGN KEY</span></td>
+                <td class="mono">@ManyToOne(flight_id)</td>
+                <td>Flight sector associated with boarding</td>
+              </tr>
+              <tr>
+                <td class="mono">seat</td>
+                <td class="mono">Seat</td>
+                <td><span class="badge-fk">FOREIGN KEY</span></td>
+                <td class="mono">@ManyToOne(seat_id)</td>
+                <td>Allocated seat (e.g. 12A, 14F)</td>
+              </tr>
+              <tr>
+                <td class="mono">fare</td>
+                <td class="mono">BigDecimal</td>
+                <td>PRECISION (10, 2)</td>
+                <td class="mono">@Column(precision = 10, scale = 2)</td>
+                <td>Individual ticket base fare + seat tariff</td>
+              </tr>
+              <tr>
+                <td class="mono">status</td>
+                <td class="mono">TicketStatus</td>
+                <td>ENUM (STRING)</td>
+                <td class="mono">@Enumerated(EnumType.STRING)</td>
+                <td>PENDING, CONFIRMED, CHECKED_IN, CANCELLED, BOARDED</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <div class="toast" id="toastMessage">Code copied to clipboard!</div>
+
+  <script>
+    // Initialize Mermaid
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: 'dark',
+      themeVariables: {
+        darkMode: true,
+        background: '#090d16',
+        primaryColor: '#1e3a5f',
+        primaryBorderColor: '#38bdf8',
+        primaryTextColor: '#f8fafc',
+        lineColor: '#64748b',
+        secondaryColor: '#3b1d60',
+        tertiaryColor: '#0f172a'
+      }
+    });
+
+    // Sync Mermaid Textarea Source
+    document.addEventListener("DOMContentLoaded", () => {
+      const rawMermaid = document.getElementById("mermaidTarget").textContent.trim();
+      document.getElementById("mermaidSrc").value = rawMermaid;
+    });
+
+    // View Switching
+    function switchTab(tabId) {
+      document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+      document.querySelectorAll(".tab-content").forEach(c => c.classList.remove("active"));
+
+      const targetBtn = Array.from(document.querySelectorAll(".tab-btn")).find(b => 
+        b.getAttribute("onclick").includes(tabId)
+      );
+      if (targetBtn) targetBtn.classList.add("active");
+
+      const targetContent = document.getElementById(tabId);
+      if (targetContent) targetContent.classList.add("active");
+    }
+
+    // Zoom & Pan Engine for UML Canvas
+    let scale = 0.85;
+    let translateX = 40;
+    let translateY = 20;
+    let isDragging = false;
+    let startX = 0;
+    let startY = 0;
+
+    const viewport = document.getElementById("viewport");
+    const canvasWorld = document.getElementById("canvasWorld");
+    const zoomText = document.getElementById("zoomLevel");
+
+    function updateTransform() {
+      canvasWorld.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+      zoomText.textContent = `${Math.round(scale * 100)}%`;
+    }
+
+    viewport.addEventListener("mousedown", (e) => {
+      if (e.target.closest(".uml-class") || e.target.closest(".controls-overlay") || e.target.closest(".legend-overlay")) return;
+      isDragging = true;
+      startX = e.clientX - translateX;
+      startY = e.clientY - translateY;
+      viewport.classList.add("dragging");
+    });
+
+    window.addEventListener("mousemove", (e) => {
+      if (!isDragging) return;
+      translateX = e.clientX - startX;
+      translateY = e.clientY - startY;
+      updateTransform();
+    });
+
+    window.addEventListener("mouseup", () => {
+      isDragging = false;
+      viewport.classList.remove("dragging");
+    });
+
+    viewport.addEventListener("wheel", (e) => {
+      e.preventDefault();
+      const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+      
+      const newScale = Math.min(Math.max(0.3, scale * zoomFactor), 2.5);
+      translateX = mouseX - (mouseX - translateX) * (newScale / scale);
+      translateY = mouseY - (mouseY - translateY) * (newScale / scale);
+      scale = newScale;
+      updateTransform();
+    }, { passive: false });
+
+    function zoomIn() {
+      scale = Math.min(2.5, scale * 1.2);
+      updateTransform();
+    }
+
+    function zoomOut() {
+      scale = Math.max(0.3, scale / 1.2);
+      updateTransform();
+    }
+
+    function resetZoom() {
+      scale = 0.85;
+      translateX = 40;
+      translateY = 20;
+      updateTransform();
+    }
+
+    function fitToScreen() {
+      const rect = viewport.getBoundingClientRect();
+      const canvasWidth = 2450;
+      const canvasHeight = 1520;
+      scale = Math.min((rect.width - 60) / canvasWidth, (rect.height - 60) / canvasHeight);
+      translateX = 30;
+      translateY = 30;
+      updateTransform();
+    }
+
+    // Initial Transform
+    updateTransform();
+
+    // Inspector Data & Details
+    const classData = {
+      Passenger: {
+        name: "Passenger",
+        stereotype: "Entity",
+        package: "com.airline.entity",
+        table: "passenger",
+        desc: "Represents registered users or individual travelers who make bookings and hold flight tickets.",
+        pk: "passengerId (Long, Identity)",
+        fields: [
+          { name: "passengerId", type: "Long", constraint: "PRIMARY KEY" },
+          { name: "firstName", type: "String", constraint: "NOT NULL (50)" },
+          { name: "lastName", type: "String", constraint: "NOT NULL (50)" },
+          { name: "email", type: "String", constraint: "UNIQUE, NOT NULL" },
+          { name: "password", type: "String", constraint: "BCrypt (255)" },
+          { name: "phone", type: "String", constraint: "Nullable (20)" },
+          { name: "passportNumber", type: "String", constraint: "Nullable (20)" },
+          { name: "dateOfBirth", type: "LocalDate", constraint: "Nullable" },
+          { name: "gender", type: "String", constraint: "Nullable (10)" }
+        ],
+        relations: [
+          { target: "Booking", type: "Association", mult: "1 to 0..*", desc: "Passenger places zero or more Bookings." }
+        ],
+        codeSnippet: `@Entity\n@Table(name = "passenger")\npublic class Passenger {\n    @Id @GeneratedValue(strategy = IDENTITY)\n    private Long passengerId;\n    @Column(nullable = false, unique = true)\n    private String email;\n    // getters and setters...\n}`
+      },
+      Booking: {
+        name: "Booking",
+        stereotype: "Entity",
+        package: "com.airline.entity",
+        table: "booking",
+        desc: "Central reservation record binding a passenger to a flight, tracking tickets, payment progress, and overall cost.",
+        pk: "bookingId (Long, Identity)",
+        fields: [
+          { name: "bookingId", type: "Long", constraint: "PRIMARY KEY" },
+          { name: "bookingReference", type: "String", constraint: "UNIQUE (6) [PNR]" },
+          { name: "passenger", type: "Passenger", constraint: "ManyToOne, NOT NULL" },
+          { name: "flight", type: "Flight", constraint: "ManyToOne, Nullable" },
+          { name: "bookingDate", type: "LocalDateTime", constraint: "Default now()" },
+          { name: "status", type: "BookingStatus", constraint: "PENDING / CONFIRMED" },
+          { name: "totalAmount", type: "BigDecimal", constraint: "(10, 2)" }
+        ],
+        relations: [
+          { target: "Passenger", type: "ManyToOne", mult: "* to 1", desc: "Booked by a registered Passenger." },
+          { target: "Flight", type: "ManyToOne", mult: "* to 1", desc: "Associated with a specific Flight leg." },
+          { target: "Ticket", type: "Composition", mult: "1 to 1..*", desc: "Contains 1 or more Tickets." },
+          { target: "Payment", type: "Composition", mult: "1 to 1..*", desc: "Payment records associated with reservation." }
+        ],
+        codeSnippet: `@Entity\n@Table(name = "booking")\npublic class Booking {\n    @Id @GeneratedValue\n    private Long bookingId;\n    @Column(length = 6, unique = true)\n    private String bookingReference;\n    @Enumerated(EnumType.STRING)\n    private BookingStatus status;\n}`
+      },
+      Flight: {
+        name: "Flight",
+        stereotype: "Entity",
+        package: "com.airline.entity",
+        table: "flight",
+        desc: "A specific scheduled aviation leg with assigned departure/arrival airports, times, aircraft, and pricing.",
+        pk: "flightId (Long, Identity)",
+        fields: [
+          { name: "flightId", type: "Long", constraint: "PRIMARY KEY" },
+          { name: "flightNumber", type: "String", constraint: "NOT NULL (8)" },
+          { name: "aircraft", type: "Aircraft", constraint: "ManyToOne, NOT NULL" },
+          { name: "departureAirport", type: "Airport", constraint: "ManyToOne, NOT NULL" },
+          { name: "arrivalAirport", type: "Airport", constraint: "ManyToOne, NOT NULL" },
+          { name: "departureTime", type: "LocalDateTime", constraint: "NOT NULL" },
+          { name: "arrivalTime", type: "LocalDateTime", constraint: "NOT NULL" },
+          { name: "basePrice", type: "BigDecimal", constraint: "(10, 2)" },
+          { name: "status", type: "FlightStatus", constraint: "SCHEDULED, etc." }
+        ],
+        relations: [
+          { target: "Aircraft", type: "Aggregation", mult: "* to 1", desc: "Operated by a designated Aircraft." },
+          { target: "Airport (Origin)", type: "ManyToOne", mult: "* to 1", desc: "Departs from origin Airport." },
+          { target: "Airport (Dest)", type: "ManyToOne", mult: "* to 1", desc: "Lands at destination Airport." },
+          { target: "Ticket", type: "OneToMany", mult: "1 to *", desc: "Issues individual passenger boarding tickets." }
+        ],
+        codeSnippet: `@Entity\n@Table(name = "flight", uniqueConstraints = {\n  @UniqueConstraint(columnNames = {"flight_number", "departure_time"})\n})\npublic class Flight {\n    @Id @GeneratedValue private Long flightId;\n    private String flightNumber;\n}`
+      },
+      Ticket: {
+        name: "Ticket",
+        stereotype: "Entity",
+        package: "com.airline.entity",
+        table: "ticket",
+        desc: "Individual boarding pass and fare unit for a specific seat, traveler, and flight sector within a booking.",
+        pk: "ticketId (Long, Identity)",
+        fields: [
+          { name: "ticketId", type: "Long", constraint: "PRIMARY KEY" },
+          { name: "ticketNumber", type: "String", constraint: "UNIQUE (50)" },
+          { name: "booking", type: "Booking", constraint: "ManyToOne, NOT NULL" },
+          { name: "flight", type: "Flight", constraint: "ManyToOne, NOT NULL" },
+          { name: "seat", type: "Seat", constraint: "ManyToOne, Nullable" },
+          { name: "fare", type: "BigDecimal", constraint: "NOT NULL (10, 2)" },
+          { name: "status", type: "TicketStatus", constraint: "CONFIRMED, BOARDED, etc." }
+        ],
+        relations: [
+          { target: "Booking", type: "ManyToOne", mult: "* to 1", desc: "Belongs to parent reservation." },
+          { target: "Seat", type: "ManyToOne", mult: "* to 0..1", desc: "Allocated seat assignment." },
+          { target: "Baggage", type: "Composition", mult: "1 to *", desc: "Checked luggage allowance." }
+        ],
+        codeSnippet: `@Entity\n@Table(name = "ticket")\npublic class Ticket {\n    @Id @GeneratedValue private Long ticketId;\n    @Column(unique = true) private String ticketNumber;\n    @ManyToOne private Booking booking;\n}`
+      },
+      Payment: {
+        name: "Payment",
+        stereotype: "Entity",
+        package: "com.airline.entity",
+        table: "payment",
+        desc: "Monetary transaction ledger entry confirming funds received via card, UPI, net banking, or wallet.",
+        pk: "paymentId (Long, Identity)",
+        fields: [
+          { name: "paymentId", type: "Long", constraint: "PRIMARY KEY" },
+          { name: "booking", type: "Booking", constraint: "ManyToOne, NOT NULL" },
+          { name: "paymentMethod", type: "String", constraint: "NOT NULL (30)" },
+          { name: "amount", type: "BigDecimal", constraint: "NOT NULL (10, 2)" },
+          { name: "status", type: "PaymentStatus", constraint: "PENDING / COMPLETED" },
+          { name: "transactionRef", type: "String", constraint: "Nullable (100)" },
+          { name: "paymentTime", type: "LocalDateTime", constraint: "Default now()" }
+        ],
+        relations: [
+          { target: "Booking", type: "ManyToOne", mult: "* to 1", desc: "Settles balance for Booking." }
+        ],
+        codeSnippet: `@Entity\n@Table(name = "payment")\npublic class Payment {\n    @Id @GeneratedValue private Long paymentId;\n    @ManyToOne private Booking booking;\n    private BigDecimal amount;\n}`
+      },
+      Airport: {
+        name: "Airport",
+        stereotype: "Entity",
+        package: "com.airline.entity",
+        table: "airport",
+        desc: "Global airport hub catalog identified by 3-letter IATA code, city, and jurisdiction.",
+        pk: "airportId (Long, Identity)",
+        fields: [
+          { name: "airportId", type: "Long", constraint: "PRIMARY KEY" },
+          { name: "iataCode", type: "String", constraint: "UNIQUE (3)" },
+          { name: "name", type: "String", constraint: "NOT NULL (100)" },
+          { name: "city", type: "String", constraint: "NOT NULL (50)" },
+          { name: "country", type: "String", constraint: "NOT NULL (50)" }
+        ],
+        relations: [
+          { target: "Flight", type: "OneToMany", mult: "1 to *", desc: "Serves as origin and destination." }
+        ],
+        codeSnippet: `@Entity\n@Table(name = "airport")\npublic class Airport {\n    @Id @GeneratedValue private Long airportId;\n    @Column(length = 3, unique = true) private String iataCode;\n}`
+      },
+      Aircraft: {
+        name: "Aircraft",
+        stereotype: "Entity",
+        package: "com.airline.entity",
+        table: "aircraft",
+        desc: "Individual airframe with unique tail registration number, manufacturer model, and operating carrier.",
+        pk: "aircraftId (Long, Identity)",
+        fields: [
+          { name: "aircraftId", type: "Long", constraint: "PRIMARY KEY" },
+          { name: "registrationNumber", type: "String", constraint: "UNIQUE (20)" },
+          { name: "aircraftModel", type: "AircraftModel", constraint: "ManyToOne, NOT NULL" },
+          { name: "airline", type: "Airline", constraint: "ManyToOne, Nullable" }
+        ],
+        relations: [
+          { target: "Seat", type: "Composition", mult: "1 to 1..*", desc: "Houses interior seating layout." },
+          { target: "AircraftModel", type: "Aggregation", mult: "* to 1", desc: "Specifications derived from Model." }
+        ],
+        codeSnippet: `@Entity\n@Table(name = "aircraft")\npublic class Aircraft {\n    @Id @GeneratedValue private Long aircraftId;\n    @Column(unique = true) private String registrationNumber;\n}`
+      },
+      AircraftModel: {
+        name: "AircraftModel",
+        stereotype: "Entity",
+        package: "com.airline.entity",
+        table: "aircraft_model",
+        desc: "Airplane specifications including manufacturer (Boeing, Airbus), model designation, and seat capacity.",
+        pk: "modelId (Long, Identity)",
+        fields: [
+          { name: "modelId", type: "Long", constraint: "PRIMARY KEY" },
+          { name: "manufacturer", type: "String", constraint: "NOT NULL (50)" },
+          { name: "modelName", type: "String", constraint: "NOT NULL (50)" },
+          { name: "capacity", type: "Integer", constraint: "NOT NULL" }
+        ],
+        relations: [],
+        codeSnippet: `@Entity\n@Table(name = "aircraft_model")\npublic class AircraftModel {\n    @Id @GeneratedValue private Long modelId;\n    private Integer capacity;\n}`
+      },
+      Airline: {
+        name: "Airline",
+        stereotype: "Entity",
+        package: "com.airline.entity",
+        table: "airline",
+        desc: "Commercial airline company operating aircraft in the fleet.",
+        pk: "airlineId (Long, Identity)",
+        fields: [
+          { name: "airlineId", type: "Long", constraint: "PRIMARY KEY" },
+          { name: "name", type: "String", constraint: "NOT NULL (100)" },
+          { name: "code", type: "String", constraint: "UNIQUE (3)" },
+          { name: "country", type: "String", constraint: "Nullable (50)" }
+        ],
+        relations: [],
+        codeSnippet: `@Entity\n@Table(name = "airline")\npublic class Airline {\n    @Id @GeneratedValue private Long airlineId;\n    @Column(unique = true) private String code;\n}`
+      },
+      Seat: {
+        name: "Seat",
+        stereotype: "Entity",
+        package: "com.airline.entity",
+        table: "seat",
+        desc: "Physical seating position in an aircraft cabin (e.g. 1A, 24C) with defined travel class.",
+        pk: "seatId (Long, Identity)",
+        fields: [
+          { name: "seatId", type: "Long", constraint: "PRIMARY KEY" },
+          { name: "seatNumber", type: "String", constraint: "NOT NULL (5)" },
+          { name: "seatClass", type: "SeatClass", constraint: "ECONOMY, BUSINESS, etc." },
+          { name: "aircraft", type: "Aircraft", constraint: "ManyToOne, NOT NULL" }
+        ],
+        relations: [],
+        codeSnippet: `@Entity\n@Table(name = "seat")\npublic class Seat {\n    @Id @GeneratedValue private Long seatId;\n    private String seatNumber;\n    @Enumerated(EnumType.STRING) private SeatClass seatClass;\n}`
+      },
+      Baggage: {
+        name: "Baggage",
+        stereotype: "Entity",
+        package: "com.airline.entity",
+        table: "baggage",
+        desc: "Registered luggage piece tied to a passenger ticket with weight verification and excess baggage fee.",
+        pk: "baggageId (Long, Identity)",
+        fields: [
+          { name: "baggageId", type: "Long", constraint: "PRIMARY KEY" },
+          { name: "ticket", type: "Ticket", constraint: "ManyToOne, NOT NULL" },
+          { name: "weightKg", type: "Double", constraint: "NOT NULL" },
+          { name: "fee", type: "BigDecimal", constraint: "(10, 2)" }
+        ],
+        relations: [],
+        codeSnippet: `@Entity\n@Table(name = "baggage")\npublic class Baggage {\n    @Id @GeneratedValue private Long baggageId;\n    @ManyToOne private Ticket ticket;\n    private Double weightKg;\n}`
+      },
+      Employee: {
+        name: "Employee",
+        stereotype: "Entity",
+        package: "com.airline.entity",
+        table: "employee",
+        desc: "Airline staff member including pilots, flight attendants, gate agents, and dispatchers.",
+        pk: "employeeId (Long, Identity)",
+        fields: [
+          { name: "employeeId", type: "Long", constraint: "PRIMARY KEY" },
+          { name: "firstName", type: "String", constraint: "NOT NULL (50)" },
+          { name: "lastName", type: "String", constraint: "NOT NULL (50)" },
+          { name: "role", type: "String", constraint: "NOT NULL (50)" },
+          { name: "email", type: "String", constraint: "UNIQUE (100)" }
+        ],
+        relations: [],
+        codeSnippet: `@Entity\n@Table(name = "employee")\npublic class Employee {\n    @Id @GeneratedValue private Long employeeId;\n    private String role;\n    private String email;\n}`
+      }
+    };
+
+    function selectClass(className) {
+      document.querySelectorAll(".uml-class").forEach(el => el.classList.remove("selected"));
+      const node = document.getElementById("node-" + className);
+      if (node) node.classList.add("selected");
+
+      const info = classData[className];
+      const inspector = document.getElementById("inspector");
+      const title = document.getElementById("insTitle");
+      const body = document.getElementById("insBody");
+
+      if (!info) return;
+
+      inspector.classList.remove("closed");
+      title.innerHTML = `<span>${info.name}</span> <span class="badge" style="font-size: 11px; padding: 2px 6px; background: rgba(56, 189, 248, 0.2); color: #38bdf8; border-radius: 4px;">&lt;&lt;${info.stereotype}&gt;&gt;</span>`;
+
+      let fieldsHtml = info.fields.map(f => `
+        <div class="property-item">
+          <span class="prop-name">${f.name}</span>
+          <span class="prop-val">${f.type} <small style="color: #64748b;">${f.constraint}</small></span>
+        </div>
+      `).join("");
+
+      let relationsHtml = info.relations && info.relations.length ? info.relations.map(r => `
+        <div class="property-item">
+          <span class="prop-name">${r.target} (${r.mult})</span>
+          <span class="prop-val" style="font-size: 11px; color: #38bdf8;">${r.type}</span>
+        </div>
+      `).join("") : `<div style="font-size: 12px; color: var(--text-muted);">No direct foreign key associations</div>`;
+
+      body.innerHTML = `
+        <div class="detail-card">
+          <h4>Metadata</h4>
+          <div class="property-list">
+            <div class="property-item"><span class="prop-name">Package</span><span class="prop-val">${info.package}</span></div>
+            <div class="property-item"><span class="prop-name">Table</span><span class="prop-val"><code>${info.table}</code></span></div>
+            <div class="property-item"><span class="prop-name">Primary Key</span><span class="prop-val">${info.pk}</span></div>
+          </div>
+        </div>
+
+        <div class="detail-card">
+          <h4>Class Description</h4>
+          <p style="font-size: 13px; color: #cbd5e1; line-height: 1.4;">${info.desc}</p>
+        </div>
+
+        <div class="detail-card">
+          <h4>Fields & Constraints (${info.fields.length})</h4>
+          <div class="property-list">${fieldsHtml}</div>
+        </div>
+
+        <div class="detail-card">
+          <h4>UML Relationships</h4>
+          <div class="property-list">${relationsHtml}</div>
+        </div>
+
+        <div class="detail-card">
+          <h4>Java JPA Entity Snippet</h4>
+          <div class="code-snippet">${info.codeSnippet}</div>
+        </div>
+      `;
+    }
+
+    function closeInspector() {
+      document.getElementById("inspector").classList.add("closed");
+      document.querySelectorAll(".uml-class").forEach(el => el.classList.remove("selected"));
+    }
+
+    function handleSearch(query) {
+      if (!query || !query.trim()) {
+        document.querySelectorAll(".uml-class").forEach(el => {
+          el.style.opacity = "1";
+          el.classList.remove("selected");
+        });
+        return;
+      }
+      const q = query.trim().toLowerCase();
+      let matchedNode = null;
+
+      document.querySelectorAll(".uml-class").forEach(el => {
+        const id = el.id.replace("node-", "").toLowerCase();
+        if (id.includes(q)) {
+          el.style.opacity = "1";
+          if (!matchedNode) matchedNode = el;
+        } else {
+          el.style.opacity = "0.2";
+        }
+      });
+
+      if (matchedNode) {
+        const className = matchedNode.id.replace("node-", "");
+        selectClass(className);
+      }
+    }
+
+    function copyMermaidCode() {
+      const code = document.getElementById("mermaidSrc").value;
+      navigator.clipboard.writeText(code).then(() => {
+        showToast("Mermaid UML Code copied to clipboard!");
+      });
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById("toastMessage");
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(() => toast.classList.remove("show"), 2500);
+    }
+
+    function exportSVG() {
+      const svg = document.getElementById("umlCanvas");
+      const serializer = new XMLSerializer();
+      const source = serializer.serializeToString(svg);
+      const blob = new Blob([source], { type: "image/svg+xml;charset=utf-8" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = "Airline_UML_Class_Diagram.svg";
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      showToast("Exported Airline_UML_Class_Diagram.svg");
+    }
+  </script>
+</body>
+</html>

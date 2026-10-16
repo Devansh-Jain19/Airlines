@@ -1,236 +1,85 @@
-# Team Development Guide & Git Workflow (`devlog.md`)
+## 2026-10-07 — Applied ConfirmTkt Sleek Color Combination & Confirm Ticket View
+
+#devlog #airlines #confirmtkt #ui-redesign
+
+> [!summary]
+> Redesigned the visual theme across the flight reservation frontend to mirror the sleek, high-clarity color combination of ConfirmTkt (`confirmtkt.com`). All preexisting functionalities, workflows, flight searches, and seat mappings remain 100% intact.
+
+- **What changed:**
+  - Overhauled color tokens in `style.css` to the signature ConfirmTkt classic palette: clean light slate canvas (`#F4F6FA`), pure white elevated surfaces (`#FFFFFF`), ConfirmTkt brand green (`#27A844`) for primary actions/confirmations, warm orange (`#FF6F00`) accents, and high-legibility slate navy typography (`#0F172A`).
+  - Added dedicated Confirm Ticket page (`#confirm-ticket-section`) with PNR search, live status badge, boarding instructions, payment breakdown, and print/PDF triggers.
+  - Refined status badges, user indicators, and cancellation actions in `app.js` to blend smoothly into the light palette without harsh dark backgrounds.
+  - Added accessibility labels to all modal close controls in `index.html`.
+- **Why:** The user requested a sleek, clean, and simple color scheme inspired by the ConfirmTkt booking platform while strictly preserving all existing features.
+- **Files touched:**
+  - `web-frontend/style.css`
+  - `web-frontend/app.js`
+  - `web-frontend/index.html`
+- **Impact:** Users now experience a modern, lightweight booking interface with high contrast, crisp typography, and branded green/orange booking indicators.
+
+## 2026-10-08 — Cleaned Hero Header & Centered Flight Discovery Tagline
+
+#devlog #airlines #frontend #ui-refinement
+
+> [!summary]
+> Removed the Spring Boot REST badge from the top hero banner and centered the flight discovery tagline across the landing view.
+
+- **What changed:**
+  - Removed the `✦ Spring Boot REST + Live Database Powered` tag badge from the hero section in `index.html`.
+  - Added flexbox alignment and auto margins to `.hero-content`, `.hero-heading`, and `.hero-subtext` in `style.css` so the tagline text is centered on all display widths.
+- **Why:** The user requested the removal of the technical stack badge pill and requested the hero subtext description to be horizontally centered on the page.
+- **Files touched:**
+  - `web-frontend/index.html`
+  - `web-frontend/style.css`
+- **Impact:** Cleaner, more customer-facing hero presentation with balanced typography and centered tagline.
+
+## 2026-10-15 — Connected Local MySQL Database & Fixed Seed Timestamp
+
+#devlog #airlines #database #mysql
+
+> [!summary]
+> Connected the Spring Boot backend to the local MySQL instance and resolved a datetime syntax issue in the sample seed data script.
+
+- **What changed:**
+  - Corrected an invalid minute value (`19:60:30` -> `20:00:30`) on row 58 in `seed.sql`.
+  - Updated `backend/src/main/resources/application.properties` to connect to local MySQL on port 3306 with `root:root1234`.
+- **Why:** Importing the database script failed due to an invalid minute value, and the application needed live connectivity to the newly configured MySQL database.
+- **Files touched:**
+  - `seed.sql`
+  - `backend/src/main/resources/application.properties`
+- **Impact:** All 12 relational database tables, indexes, views, and 80+ records import cleanly into MySQL and synchronize with the backend.
+
+## 2026-10-15 — Generated Classic Peter Chen ER Diagram (Draw.io & HTML)
+
+#devlog #airlines #database #er-diagram #chen-notation
+
+> [!summary]
+> Generated a classic Peter Chen Entity-Relationship diagram featuring rectangles for entities, diamonds for relationships, and ellipses for attributes with underlined primary keys.
+
+- **What changed:**
+  - Created [`Airline_Chen_ER_Diagram.drawio`](file:///Users/hardik/Airlines/Airline_Chen_ER_Diagram.drawio) ready for direct editing and export in draw.io.
+  - Created [`Airline_Chen_ER_Diagram.html`](file:///Users/hardik/Airlines/Airline_Chen_ER_Diagram.html) with an interactive SVG viewer for direct viewing in any web browser.
+- **Why:** The user required a formal conceptual ER diagram using Chen notation (ovals and diamonds) rather than physical database table boxes.
+- **Files touched:**
+  - `Airline_Chen_ER_Diagram.drawio`
+  - `Airline_Chen_ER_Diagram.html`
+- **Impact:** Complete academic/conceptual entity-relationship representation of all 12 entities, attributes, primary keys, and relationships.
+
+## 2026-10-15 — Created Interactive UML Class Diagram (HTML)
+
+#devlog #airlines #uml #class-diagram
+
+> [!summary]
+> Created a standalone interactive HTML visualizer for the complete UML Class Diagram of the Airline Reservation System project.
+
+- **What changed:** Generated [`Airline_Class_Diagram.html`](file:///Users/hardik/Airlines/Airline_Class_Diagram.html) containing:
+  - An interactive, pan/zoom-enabled SVG canvas showing all 12 core entity classes, 5 enumeration types, 3-compartment UML boxes with fields, access modifiers (+/-), datatypes, methods, stereotypes, and standardized relationships (Composition, Aggregation, Association, Dependency).
+  - A 3-Tier Layered Architecture view mapping Spring Boot REST Controllers, Transactional Services, Spring Data Repositories, and JPA Entities.
+  - An interactive live Mermaid.js UML class diagram tab with a one-click copy button and export tool.
+  - A searchable Class Specification & Data Dictionary detailing table mappings, primary keys, foreign keys, and constraints.
+  - An Inspector Drawer displaying metadata and Java entity snippets upon clicking any class.
+- **Why:** The user requested an HTML code file for the class diagram of the project.
+- **Files touched:**
+  - `Airline_Class_Diagram.html`
+- **Impact:** Developers and stakeholders can now open `Airline_Class_Diagram.html` directly in any web browser to explore, search, and export the complete object-oriented domain model and architecture without external tools.
 
-Welcome to the **Airlines Booking System** Team Development Guide. This document defines our team's standard operating procedures for executing build commands, managing Git branches, maintaining up-to-date branch histories, and safely committing and pushing code to `main`.
-
----
-
-## 1. Core Principles
-
-To maintain build stability and prevent integration bottlenecks:
-1. **`main` is Always Production-Ready**: Code on `main` must compile cleanly and pass all automated tests.
-2. **Never Let Feature Branches Fall Behind**: Update your working branch with `main` daily and immediately before pushing code.
-3. **Test Before You Push**: Always execute backend and frontend test suites locally before committing or opening a pull request.
-4. **Clean & Descriptive Commit History**: Use conventional commit messages so changes are easy to trace.
-
----
-
-## 2. Essential Development Commands
-
-### Backend Commands (Spring Boot 3.x)
-
-Execute these commands from the root directory or backend project folder:
-
-| Task | Command | Description |
-| :--- | :--- | :--- |
-| **Run Application** | `./mvnw spring-boot:run` *(or `./gradlew bootRun`)* | Starts local Spring Boot server on port `8080`. |
-| **Run Unit Tests** | `./mvnw test` *(or `./gradlew test`)* | Executes JUnit 5 test suite. Must pass before merging. |
-| **Package Application** | `./mvnw clean package -DskipTests=false` | Builds executable JAR file while validating tests. |
-| **Clean Build Directory** | `./mvnw clean` | Removes `/target` or `/build` output folder. |
-
-### Frontend Commands (Android / Gradle)
-
-Execute these commands from the root directory or android project folder:
-
-| Task | Command | Description |
-| :--- | :--- | :--- |
-| **Build Debug APK** | `./gradlew assembleDebug` | Compiles Android app and generates debug APK. |
-| **Run Unit Tests** | `./gradlew testDebugUnitTest` | Runs local JVM unit tests for ViewModels & Repositories. |
-| **Check Lint & Style** | `./gradlew lint` | Audits code quality and potential Android issues. |
-| **Clean Project** | `./gradlew clean` | Flushes Gradle build cache and intermediate artifacts. |
-
----
-
-## 3. Systematic Git Branching Workflow
-
-```
-[origin/main] ───────┬───────────────────────┬───────────────► (Main Stream)
-                     │                       │
-                     ▼                       ▲ (Rebase & Merge)
-[feature/login] ─────┴───► [Sync main] ──────┴───────────────► (Feature Branch)
-```
-
-### Phase 1: Starting New Work
-
-Always create feature branches off the latest `main` branch.
-
-```bash
-# 1. Switch to main branch
-git checkout main
-
-# 2. Fetch and pull latest updates from remote main
-git pull origin main
-
-# 3. Create and switch to your feature or bugfix branch
-# Naming convention: feature/<name>, bugfix/<issue-id>, refactor/<topic>
-git checkout -b feature/auth-jwt-login
-```
-
----
-
-### Phase 2: Keeping Your Branch Up-To-Date with `main`
-
-> **CRITICAL RULE:** Run this synchronization routine **every morning** and **before merging or pushing code**.
-
-If another team member pushes changes to `main`, your feature branch will fall behind. To sync your branch without messy merge commits, use `git rebase`:
-
-#### Standard Sync Procedure (Rebase Method - Recommended):
-
-```bash
-# Step 1: Save any uncommitted local work to stash
-git stash
-
-# Step 2: Fetch latest main branch from remote
-git fetch origin main
-
-# Step 3: Rebase your feature branch on top of updated origin/main
-git rebase origin/main
-
-# Step 4: Restore your stashed local work (if you stashed in Step 1)
-git stash pop
-
-# Step 5: Verify build & tests pass after rebase
-./mvnw test                       # For Backend
-./gradlew testDebugUnitTest       # For Frontend
-```
-
-#### Alternative Sync Procedure (Merge Method):
-
-If your team prefers merge commits over rebase:
-
-```bash
-git fetch origin main
-git merge origin/main
-```
-
----
-
-### Phase 3: Committing Code
-
-Make frequent, atomic commits with meaningful descriptions following the **Conventional Commits** specification (`feat`, `fix`, `docs`, `refactor`, `test`, `chore`).
-
-```bash
-# 1. Review changed and untracked files
-git status
-
-# 2. Inspect your changes to ensure no unwanted files or temporary debug statements remain
-git diff
-
-# 3. Stage the modified files
-git add path/to/AuthService.java path/to/AuthController.java
-
-# 4. Commit with a descriptive message
-git commit -m "feat(auth): add JWT token generation and validation filter"
-```
-
-#### Conventional Commit Types:
-- `feat:` A new feature for the user or system
-- `fix:` A bug fix
-- `docs:` Documentation-only changes
-- `style:` Code formatting, missing semi-colons, etc. (no functional change)
-- `refactor:` Code refactoring without adding features or fixing bugs
-- `test:` Adding or updating unit/integration tests
-- `chore:` Updating build scripts, dependencies, or configuration
-
----
-
-### Phase 4: Pushing Your Feature Branch to Remote
-
-Push your branch to GitHub/GitLab so your team can review it.
-
-```bash
-# First push of a new branch (sets upstream tracking)
-git push -u origin feature/auth-jwt-login
-
-# Subsequent pushes
-git push
-```
-
-> **Note on Rebased Branches:** If you rebased your branch *after* already pushing it to origin, you must push using `--force-with-lease`:
-> ```bash
-> git push --force-with-lease
-> ```
-> *Never use raw `git push --force` as it can overwrite colleagues' work.*
-
----
-
-### Phase 5: When and How to Push/Merge into `main`
-
-#### Prerequisites for Merging to `main`:
-1. ✅ Your branch is fully updated with `origin/main` (rebased/merged).
-2. ✅ All backend unit tests (`./mvnw test`) and frontend tests pass cleanly.
-3. ✅ Code builds without errors (`./mvnw clean package` / `./gradlew assembleDebug`).
-4. ✅ Pull Request (PR) reviewed and approved by at least one team member.
-
-#### Option A: Merging via Pull Request (Recommended Workflow)
-1. Open a Pull Request on GitHub/GitLab from `feature/auth-jwt-login` into `main`.
-2. Request a code review.
-3. Once CI checks pass and approval is received, select **"Squash and Merge"** or **"Rebase and Merge"**.
-
-#### Option B: Merging directly via Command Line (Local Merge)
-
-```bash
-# 1. Switch to main and pull latest main
-git checkout main
-git pull origin main
-
-# 2. Merge your feature branch
-git merge feature/auth-jwt-login
-
-# 3. Verify final build on main
-./mvnw test
-
-# 4. Push updated main to remote repository
-git push origin main
-
-# 5. Clean up local and remote feature branches
-git branch -d feature/auth-jwt-login
-git push origin --delete feature/auth-jwt-login
-```
-
----
-
-## 4. Handling Merge Conflicts
-
-When rebasing or merging, Git may report conflicts if `main` modified the same code lines.
-
-### Conflict Resolution Steps:
-1. Identify conflicting files listed by Git (`git status`).
-2. Open each conflicting file and look for conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`).
-3. Resolve the conflict by keeping valid code and removing markers.
-4. Stage resolved files:
-   ```bash
-   git add path/to/resolved-file.java
-   ```
-5. Continue the rebase (or commit the merge):
-   ```bash
-   git rebase --continue
-   ```
-6. If things get messy and you want to start over safely, abort:
-   ```bash
-   git rebase --abort
-   ```
-
----
-
-## 5. Daily Developer Checklist
-
-Print or keep this quick checklist handy during daily development:
-
-```
-[ ] MORNING ROUTINE:
-    git checkout main && git pull origin main
-    git checkout feature/my-branch && git rebase main
-
-[ ] DURING DEVELOPMENT:
-    - Write code & unit tests
-    - Keep commits small & atomic (git commit -m "feat(...)")
-
-[ ] BEFORE PUSHING:
-    - Run build & tests locally (./mvnw test / ./gradlew testDebugUnitTest)
-    - Rebase latest main: git fetch origin && git rebase origin/main
-    - Push branch: git push -u origin feature/my-branch
-
-[ ] MERGING TO MAIN:
-    - Ensure PR is approved & CI passes
-    - Merge into main & delete feature branch
-```

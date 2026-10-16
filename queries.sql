@@ -239,3 +239,47 @@ UPDATE ticket SET status = 'CANCELLED', seat_id = NULL WHERE ticket_id = 71;
 
 -- 30. Clean up failed payments older than 90 days
 DELETE FROM payment WHERE status = 'FAILED' AND paid_at < NOW() - INTERVAL 90 DAY;
+
+-- 31. Station Connectivity Audit: Number of connected destination stations and return trip availability for every station
+SELECT station_code,
+       station_name,
+       station_city,
+       connected_destination_stations,
+       return_trip_stations_available,
+       total_outbound_flights,
+       total_inbound_flights
+FROM v_station_connectivity
+ORDER BY connected_destination_stations DESC, station_code ASC;
+
+-- 32. Multi-Trip Search: Available one-way and matching return trip flights between stations for round-trip booking
+SELECT 'OUTBOUND' AS trip_segment,
+       f.flight_number,
+       al.name AS airline,
+       dep.iata_code AS dep_code,
+       arr.iata_code AS arr_code,
+       f.departure_time,
+       f.arrival_time,
+       f.base_price
+FROM flight f
+JOIN aircraft ac ON ac.aircraft_id = f.aircraft_id
+JOIN airline al ON al.airline_id = ac.airline_id
+JOIN airport dep ON dep.airport_id = f.departure_airport_id
+JOIN airport arr ON arr.airport_id = f.arrival_airport_id
+WHERE dep.iata_code = 'DEL' AND arr.iata_code = 'BOM' AND f.status = 'SCHEDULED'
+UNION ALL
+SELECT 'RETURN' AS trip_segment,
+       f.flight_number,
+       al.name AS airline,
+       dep.iata_code AS dep_code,
+       arr.iata_code AS arr_code,
+       f.departure_time,
+       f.arrival_time,
+       f.base_price
+FROM flight f
+JOIN aircraft ac ON ac.aircraft_id = f.aircraft_id
+JOIN airline al ON al.airline_id = ac.airline_id
+JOIN airport dep ON dep.airport_id = f.departure_airport_id
+JOIN airport arr ON arr.airport_id = f.arrival_airport_id
+WHERE dep.iata_code = 'BOM' AND arr.iata_code = 'DEL' AND f.status = 'SCHEDULED'
+ORDER BY trip_segment DESC, departure_time ASC;
+

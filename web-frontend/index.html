@@ -5,10 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>AeroSkyline | Premium Flight Booking & Reservation</title>
     <meta name="description" content="Next-generation airline booking experience. Search domestic and international flights, select real-time cabin seats, and manage boarding passes seamlessly.">
-    <!-- Google Fonts -->
+    <!-- Google Fonts: Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -30,15 +30,15 @@
                 </div>
             </div>
 
-            <div class="backend-badge" id="backend-status-badge" title="Backend Server Status">
-                <span class="status-dot pulsing" id="status-dot"></span>
-                <span id="backend-status-text">Connecting to localhost:8081...</span>
-            </div>
 
             <nav class="nav-actions">
                 <button class="nav-btn" id="nav-search-btn">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
                     Search Flights
+                </button>
+                <button class="nav-btn" id="nav-confirm-ticket-btn">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+                    Confirm Ticket
                 </button>
                 <button class="nav-btn" id="nav-bookings-btn">
                     <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
@@ -59,9 +59,6 @@
         <!-- Hero Section & Search Console -->
         <section class="hero-section" id="hero-section">
             <div class="hero-content">
-                <div class="hero-tag">
-                    <span class="tag-sparkle">✦</span> Spring Boot REST + Live Database Powered
-                </div>
                 <h1 class="hero-heading">
                     Explore the World with <span class="gradient-text">Seamless Aviation</span>
                 </h1>
@@ -85,7 +82,7 @@
                 </div>
 
                 <form class="search-form" id="flight-search-form">
-                    <div class="form-grid">
+                    <div class="form-grid" id="form-grid">
                         <!-- Origin Input -->
                         <div class="field-group">
                             <label for="origin-select" class="field-label">Departure From</label>
@@ -99,7 +96,7 @@
                         </div>
 
                         <!-- Swap Button -->
-                        <button type="button" class="swap-btn" id="swap-airports-btn" title="Swap Origin & Destination">
+                        <button type="button" class="swap-btn" id="swap-airports-btn" title="Swap Origin & Destination" aria-label="Swap origin and destination">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <path d="m16 3 4 4-4 4M20 7H4M8 21l-4-4 4-4M4 17h16"/>
                             </svg>
@@ -125,6 +122,16 @@
                                 <input type="date" id="departure-date" class="custom-input" required>
                             </div>
                             <span class="field-hint">Seeded dates available</span>
+                        </div>
+
+                        <!-- Return Date (For Round Trip) -->
+                        <div class="field-group hidden" id="return-date-group">
+                            <label for="return-date" class="field-label">Return Date</label>
+                            <div class="input-container">
+                                <span class="input-icon">🔄</span>
+                                <input type="date" id="return-date" class="custom-input">
+                            </div>
+                            <span class="field-hint">Return trip booking</span>
                         </div>
 
                         <!-- Passengers / Class -->
@@ -316,6 +323,226 @@
                 </div>
             </div>
         </section>
+
+        <!-- Confirmed Ticket Page Section -->
+        <section class="confirm-ticket-section hidden" id="confirm-ticket-section">
+            <div class="confirm-ticket-banner">
+                <div class="confirm-status-row">
+                    <span class="success-pill">✓ Booking Confirmed &amp; Ticket Issued</span>
+                    <button class="btn-outline" id="confirm-back-to-search-btn">← Back to Search</button>
+                </div>
+                <div class="confirm-heading-group">
+                    <h2 class="confirm-title">Official E-Ticket &amp; Boarding Confirmation</h2>
+                    <p class="confirm-subtitle">Your reservation is confirmed and registered with the airline. Keep this ticket reference for airport check-in and security.</p>
+                </div>
+                <div class="pnr-highlight-bar" id="pnr-highlight-bar">
+                    <div class="pnr-display-block">
+                        <span class="pnr-tag">BOOKING REFERENCE (PNR)</span>
+                        <span class="pnr-value tabular-numbers" id="page-confirm-pnr">AMS8F2</span>
+                    </div>
+                    <button class="btn-outline btn-copy-pnr" id="copy-pnr-btn" title="Copy PNR to Clipboard">
+                        📋 Copy Reference
+                    </button>
+                </div>
+            </div>
+
+            <!-- Optional PNR Lookup Box (when opened directly without prior booking) -->
+            <div class="pnr-lookup-card glass-panel hidden" id="pnr-lookup-card">
+                <h3 class="lookup-title">Look Up Confirmed E-Ticket</h3>
+                <p class="lookup-subtitle">Enter your 6-character PNR or Booking ID to retrieve your live electronic ticket.</p>
+                <form id="pnr-lookup-form" class="pnr-lookup-form">
+                    <input type="text" id="lookup-pnr-input" class="custom-input pnr-input" placeholder="e.g. AMS8F2 or Booking ID" required maxlength="12">
+                    <button type="submit" class="btn-primary-md">Retrieve Ticket →</button>
+                </form>
+            </div>
+
+            <!-- Main Confirmation Grid -->
+            <div class="confirm-grid" id="confirm-ticket-grid">
+                <!-- Left: Full E-Ticket & Boarding Pass -->
+                <div class="confirm-main-col">
+                    <div class="boarding-pass-card" id="page-boarding-pass-card">
+                        <div class="pass-main">
+                            <div class="pass-top">
+                                <div class="pass-brand">
+                                    <span class="pass-logo">✈</span>
+                                    <span class="pass-airline" id="page-pass-airline">IndiGo Airlines</span>
+                                </div>
+                                <div class="pass-class-badge" id="page-pass-class">ECONOMY CLASS</div>
+                            </div>
+
+                            <div class="pass-route">
+                                <div class="route-city">
+                                    <span class="city-code tabular-numbers" id="page-pass-origin-code">DEL</span>
+                                    <span class="city-name" id="page-pass-origin-city">New Delhi</span>
+                                </div>
+                                <div class="route-plane">
+                                    <span class="flight-duration tabular-numbers" id="page-pass-duration">2h 15m</span>
+                                    <div class="flight-line">
+                                        <span>✈</span>
+                                    </div>
+                                    <span class="flight-status">NON-STOP</span>
+                                </div>
+                                <div class="route-city right">
+                                    <span class="city-code tabular-numbers" id="page-pass-dest-code">BOM</span>
+                                    <span class="city-name" id="page-pass-dest-city">Mumbai</span>
+                                </div>
+                            </div>
+
+                            <div class="pass-info-grid">
+                                <div class="info-cell">
+                                    <span class="cell-label">PASSENGER NAME</span>
+                                    <span class="cell-val" id="page-pass-passenger-name">Aarav Sharma</span>
+                                </div>
+                                <div class="info-cell">
+                                    <span class="cell-label">FLIGHT NO.</span>
+                                    <span class="cell-val tabular-numbers" id="page-pass-flight-number">6E201</span>
+                                </div>
+                                <div class="info-cell">
+                                    <span class="cell-label">DEPARTURE</span>
+                                    <span class="cell-val tabular-numbers" id="page-pass-departure-time">06:30 AM</span>
+                                </div>
+                                <div class="info-cell">
+                                    <span class="cell-label">DATE</span>
+                                    <span class="cell-val tabular-numbers" id="page-pass-flight-date">2026-10-08</span>
+                                </div>
+                                <div class="info-cell">
+                                    <span class="cell-label">BOARDING TIME</span>
+                                    <span class="cell-val tabular-numbers" id="page-pass-boarding-time">05:45 AM</span>
+                                </div>
+                                <div class="info-cell">
+                                    <span class="cell-label">TERMINAL / GATE</span>
+                                    <span class="cell-val">T3 / Gate B4</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="pass-divider">
+                            <div class="notch top"></div>
+                            <div class="dashed-line"></div>
+                            <div class="notch bottom"></div>
+                        </div>
+
+                        <div class="pass-stub">
+                            <div class="stub-header">
+                                <span class="stub-pnr-lbl">BOOKING REF / PNR</span>
+                                <span class="stub-pnr-val tabular-numbers" id="page-pass-pnr-code">AMS8F2</span>
+                            </div>
+
+                            <div class="stub-seat-box">
+                                <span class="stub-seat-lbl">SEAT</span>
+                                <span class="stub-seat-val tabular-numbers" id="page-pass-seat-number">3A</span>
+                            </div>
+
+                            <div class="barcode-container">
+                                <div class="simulated-barcode"></div>
+                                <span class="barcode-text tabular-numbers" id="page-pass-ticket-id">ETKT-10829374</span>
+                            </div>
+
+                            <div class="stub-status-pill">PAID &amp; ISSUED</div>
+                        </div>
+                    </div>
+
+                    <!-- Travel Advisory & Instructions Card -->
+                    <div class="travel-advisory-card glass-panel">
+                        <h4 class="advisory-title">Travel Advisory &amp; Boarding Instructions</h4>
+                        <div class="advisory-grid">
+                            <div class="advisory-item">
+                                <span class="advisory-icon">🧳</span>
+                                <div>
+                                    <span class="advisory-label">Baggage Allowance</span>
+                                    <p class="advisory-text" id="page-pass-baggage-desc">7 kg Cabin Baggage + 15 kg Check-in Baggage included</p>
+                                </div>
+                            </div>
+                            <div class="advisory-item">
+                                <span class="advisory-icon">🛂</span>
+                                <div>
+                                    <span class="advisory-label">Valid ID Required</span>
+                                    <p class="advisory-text">Present a valid government photo ID (Aadhaar / Passport) at security screening.</p>
+                                </div>
+                            </div>
+                            <div class="advisory-item">
+                                <span class="advisory-icon">⏰</span>
+                                <div>
+                                    <span class="advisory-label">Check-in Timings</span>
+                                    <p class="advisory-text">Check-in counters close 60 mins before departure. Gates close 25 mins prior.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Billing & Quick Actions -->
+                <div class="confirm-side-col">
+                    <!-- Payment & Receipt Card -->
+                    <div class="glass-panel confirm-side-card">
+                        <h4 class="side-card-title">Billing &amp; Payment Receipt</h4>
+                        <div class="fare-row">
+                            <span class="lbl">Payment Status</span>
+                            <span class="val text-success">✓ Verified &amp; Settled</span>
+                        </div>
+                        <div class="fare-row">
+                            <span class="lbl">Payment Method</span>
+                            <span class="val" id="page-confirm-payment-method">Credit / Debit Card</span>
+                        </div>
+                        <div class="fare-row">
+                            <span class="lbl">Transaction Ref</span>
+                            <span class="val tabular-numbers" id="page-confirm-txn-id">TXN-82019A</span>
+                        </div>
+                        <div class="divider"></div>
+                        <div class="fare-row">
+                            <span class="lbl">Base Flight Fare</span>
+                            <span class="val tabular-numbers" id="page-confirm-base-fare">₹5,240</span>
+                        </div>
+                        <div class="fare-row">
+                            <span class="lbl">Baggage Addon</span>
+                            <span class="val tabular-numbers" id="page-confirm-baggage-fare">₹0</span>
+                        </div>
+                        <div class="fare-row">
+                            <span class="lbl">Aviation Fees &amp; Taxes</span>
+                            <span class="val tabular-numbers">₹350</span>
+                        </div>
+                        <div class="price-total">
+                            <span>Total Paid</span>
+                            <span class="total-amount tabular-numbers" id="page-confirm-total-amount">₹5,590</span>
+                        </div>
+                    </div>
+
+                    <!-- Passenger & Contact Card -->
+                    <div class="glass-panel confirm-side-card">
+                        <h4 class="side-card-title">Primary Passenger Details</h4>
+                        <div class="fare-row">
+                            <span class="lbl">Full Name</span>
+                            <span class="val" id="page-confirm-passenger-name">Aarav Sharma</span>
+                        </div>
+                        <div class="fare-row">
+                            <span class="lbl">Email Address</span>
+                            <span class="val" id="page-confirm-email">aarav@gmail.com</span>
+                        </div>
+                        <div class="fare-row">
+                            <span class="lbl">Phone Number</span>
+                            <span class="val tabular-numbers" id="page-confirm-phone">+91 9876543210</span>
+                        </div>
+                        <div class="fare-row">
+                            <span class="lbl">Passport / ID</span>
+                            <span class="val tabular-numbers" id="page-confirm-passport">P9823102</span>
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="confirm-actions-panel">
+                        <button class="btn-primary-lg" id="page-print-ticket-btn">
+                            🖨️ Print Ticket / Save PDF
+                        </button>
+                        <button class="btn-outline" id="page-book-another-btn">
+                            ✈️ Book Another Flight
+                        </button>
+                        <button class="btn-outline" id="page-view-all-bookings-btn">
+                            📂 View in My Bookings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
     </main>
 
     <!-- Modal: Checkout & Passenger Details -->
@@ -326,7 +553,7 @@
                     <h3 class="modal-title">Passenger Information & Payment</h3>
                     <p class="modal-subtitle">Complete your details to confirm your ticket</p>
                 </div>
-                <button class="modal-close-btn" id="close-checkout-modal">&times;</button>
+                <button class="modal-close-btn" id="close-checkout-modal" aria-label="Close checkout modal">&times;</button>
             </div>
 
             <form id="checkout-form" class="checkout-form">
@@ -423,7 +650,7 @@
                     <span class="success-pill">✓ Booking Confirmed</span>
                     <h3 class="modal-title">Official E-Ticket & Boarding Pass</h3>
                 </div>
-                <button class="modal-close-btn" id="close-ticket-modal">&times;</button>
+                <button class="modal-close-btn" id="close-ticket-modal" aria-label="Close boarding pass modal">&times;</button>
             </div>
 
             <!-- Luxury Boarding Pass Component -->
@@ -522,7 +749,7 @@
         <div class="modal-box glass-panel modal-sm">
             <div class="modal-header">
                 <h3 class="modal-title" id="auth-modal-title">Sign In to AeroSkyline</h3>
-                <button class="modal-close-btn" id="close-auth-modal">&times;</button>
+                <button class="modal-close-btn" id="close-auth-modal" aria-label="Close authentication modal">&times;</button>
             </div>
 
             <div class="auth-tabs">
@@ -587,7 +814,7 @@
                     <h3 class="modal-title">My Bookings & Reservations</h3>
                     <p class="modal-subtitle">Manage your booked flights and boarding passes</p>
                 </div>
-                <button class="modal-close-btn" id="close-bookings-modal">&times;</button>
+                <button class="modal-close-btn" id="close-bookings-modal" aria-label="Close bookings modal">&times;</button>
             </div>
 
             <div id="bookings-list-content">

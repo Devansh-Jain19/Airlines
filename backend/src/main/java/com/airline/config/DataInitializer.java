@@ -12,8 +12,7 @@ import org.springframework.stereotype.Component;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 public class DataInitializer implements CommandLineRunner {
@@ -31,36 +30,71 @@ public class DataInitializer implements CommandLineRunner {
     public void run(String... args) throws Exception {
         if (airportRepository.count() > 0) return;
 
-        // 1. Seed Airports (Domestic & International)
-        Airport del = airportRepository.save(new Airport("DEL", "Indira Gandhi International Airport", "New Delhi", "India"));
-        Airport bom = airportRepository.save(new Airport("BOM", "Chhatrapati Shivaji Maharaj International Airport", "Mumbai", "India"));
-        Airport blr = airportRepository.save(new Airport("BLR", "Kempegowda International Airport", "Bengaluru", "India"));
-        Airport hyd = airportRepository.save(new Airport("HYD", "Rajiv Gandhi International Airport", "Hyderabad", "India"));
-        Airport maa = airportRepository.save(new Airport("MAA", "Chennai International Airport", "Chennai", "India"));
-        Airport ccu = airportRepository.save(new Airport("CCU", "Netaji Subhash Chandra Bose International Airport", "Kolkata", "India"));
-        Airport jfk = airportRepository.save(new Airport("JFK", "John F. Kennedy International Airport", "New York", "USA"));
-        Airport lax = airportRepository.save(new Airport("LAX", "Los Angeles International Airport", "Los Angeles", "USA"));
-        Airport lhr = airportRepository.save(new Airport("LHR", "Heathrow Airport", "London", "UK"));
-        Airport dxb = airportRepository.save(new Airport("DXB", "Dubai International Airport", "Dubai", "UAE"));
+        // 1. Seed All 25 Major Indian Domestic Stations + 4 Key International Hubs
+        Map<String, Airport> ap = new LinkedHashMap<>();
+        ap.put("DEL", airportRepository.save(new Airport("DEL", "Indira Gandhi International Airport", "New Delhi", "India")));
+        ap.put("BOM", airportRepository.save(new Airport("BOM", "Chhatrapati Shivaji Maharaj International Airport", "Mumbai", "India")));
+        ap.put("BLR", airportRepository.save(new Airport("BLR", "Kempegowda International Airport", "Bengaluru", "India")));
+        ap.put("MAA", airportRepository.save(new Airport("MAA", "Chennai International Airport", "Chennai", "India")));
+        ap.put("HYD", airportRepository.save(new Airport("HYD", "Rajiv Gandhi International Airport", "Hyderabad", "India")));
+        ap.put("CCU", airportRepository.save(new Airport("CCU", "Netaji Subhash Chandra Bose International Airport", "Kolkata", "India")));
+        ap.put("GOI", airportRepository.save(new Airport("GOI", "Dabolim Airport", "Goa", "India")));
+        ap.put("COK", airportRepository.save(new Airport("COK", "Cochin International Airport", "Kochi", "India")));
+        ap.put("IXR", airportRepository.save(new Airport("IXR", "Birsa Munda Airport", "Ranchi", "India")));
+        ap.put("AMD", airportRepository.save(new Airport("AMD", "Sardar Vallabhbhai Patel International Airport", "Ahmedabad", "India")));
+        ap.put("PNQ", airportRepository.save(new Airport("PNQ", "Pune International Airport", "Pune", "India")));
+        ap.put("JAI", airportRepository.save(new Airport("JAI", "Jaipur International Airport", "Jaipur", "India")));
+        ap.put("LKO", airportRepository.save(new Airport("LKO", "Chaudhary Charan Singh International Airport", "Lucknow", "India")));
+        ap.put("GAU", airportRepository.save(new Airport("GAU", "Lokpriya Gopinath Bordoloi International Airport", "Guwahati", "India")));
+        ap.put("TRV", airportRepository.save(new Airport("TRV", "Thiruvananthapuram International Airport", "Thiruvananthapuram", "India")));
+        ap.put("IXC", airportRepository.save(new Airport("IXC", "Shaheed Bhagat Singh International Airport", "Chandigarh", "India")));
+        ap.put("PAT", airportRepository.save(new Airport("PAT", "Jay Prakash Narayan Airport", "Patna", "India")));
+        ap.put("BBI", airportRepository.save(new Airport("BBI", "Biju Patnaik International Airport", "Bhubaneswar", "India")));
+        ap.put("SXR", airportRepository.save(new Airport("SXR", "Sheikh ul-Alam International Airport", "Srinagar", "India")));
+        ap.put("IDR", airportRepository.save(new Airport("IDR", "Devi Ahilyabai Holkar Airport", "Indore", "India")));
+        ap.put("NAG", airportRepository.save(new Airport("NAG", "Dr. Babasaheb Ambedkar International Airport", "Nagpur", "India")));
+        ap.put("VTZ", airportRepository.save(new Airport("VTZ", "Visakhapatnam International Airport", "Visakhapatnam", "India")));
+        ap.put("VNS", airportRepository.save(new Airport("VNS", "Lal Bahadur Shastri International Airport", "Varanasi", "India")));
+        ap.put("ATQ", airportRepository.save(new Airport("ATQ", "Sri Guru Ram Dass Jee International Airport", "Amritsar", "India")));
+        ap.put("CJB", airportRepository.save(new Airport("CJB", "Coimbatore International Airport", "Coimbatore", "India")));
+
+        // International Hubs
+        ap.put("JFK", airportRepository.save(new Airport("JFK", "John F. Kennedy International Airport", "New York", "USA")));
+        ap.put("LAX", airportRepository.save(new Airport("LAX", "Los Angeles International Airport", "Los Angeles", "USA")));
+        ap.put("LHR", airportRepository.save(new Airport("LHR", "Heathrow Airport", "London", "UK")));
+        ap.put("DXB", airportRepository.save(new Airport("DXB", "Dubai International Airport", "Dubai", "UAE")));
 
         // 2. Seed Airlines
         Airline indigo = airlineRepository.save(new Airline("IndiGo", "6E", "India"));
         Airline airIndia = airlineRepository.save(new Airline("Air India", "AI", "India"));
+        Airline vistara = airlineRepository.save(new Airline("Vistara", "UK", "India"));
+        Airline spicejet = airlineRepository.save(new Airline("SpiceJet", "SG", "India"));
+        Airline akasa = airlineRepository.save(new Airline("Akasa Air", "QP", "India"));
         Airline delta = airlineRepository.save(new Airline("Delta Air Lines", "DL", "USA"));
         Airline britishAirways = airlineRepository.save(new Airline("British Airways", "BA", "UK"));
 
-        // 3. Seed Aircraft Models & Aircraft
+        // 3. Seed Aircraft Models & Physical Fleet
         AircraftModel a320 = aircraftModelRepository.save(new AircraftModel("Airbus", "A320neo", 180));
+        AircraftModel a321 = aircraftModelRepository.save(new AircraftModel("Airbus", "A321neo", 220));
+        AircraftModel b737 = aircraftModelRepository.save(new AircraftModel("Boeing", "737 MAX 8", 189));
         AircraftModel b777 = aircraftModelRepository.save(new AircraftModel("Boeing", "777-300ER", 300));
-        Aircraft aircraft1 = aircraftRepository.save(new Aircraft("VT-IND01", a320, indigo));
-        Aircraft aircraft2 = aircraftRepository.save(new Aircraft("N102DL", a320, delta));
-        Aircraft aircraft3 = aircraftRepository.save(new Aircraft("G-STBA", b777, britishAirways));
+        AircraftModel b787 = aircraftModelRepository.save(new AircraftModel("Boeing", "787-9 Dreamliner", 296));
 
-        // 4. Seed Seats (Columns A, B, C, D)
+        Aircraft ac1 = aircraftRepository.save(new Aircraft("VT-IND01", a320, indigo));
+        Aircraft ac2 = aircraftRepository.save(new Aircraft("VT-AIC01", a320, airIndia));
+        Aircraft ac3 = aircraftRepository.save(new Aircraft("VT-VIS01", a321, vistara));
+        Aircraft ac4 = aircraftRepository.save(new Aircraft("VT-SPJ01", b737, spicejet));
+        Aircraft ac5 = aircraftRepository.save(new Aircraft("VT-AKA01", b737, akasa));
+        Aircraft ac6 = aircraftRepository.save(new Aircraft("N102DL", b777, delta));
+        Aircraft ac7 = aircraftRepository.save(new Aircraft("G-STBA", b787, britishAirways));
+
+        List<Aircraft> fleet = List.of(ac1, ac2, ac3, ac4, ac5, ac6, ac7);
+
+        // 4. Seed Seats for each aircraft (Rows 1-8, Columns A, B, C, D)
         List<Seat> seats = new ArrayList<>();
         String[] cols = {"A", "B", "C", "D"};
-        for (Aircraft ac : List.of(aircraft1, aircraft2, aircraft3)) {
-            for (int row = 1; row <= 12; row++) {
+        for (Aircraft ac : fleet) {
+            for (int row = 1; row <= 8; row++) {
                 SeatClass seatClass = (row <= 2) ? SeatClass.BUSINESS : SeatClass.ECONOMY;
                 for (String col : cols) {
                     seats.add(new Seat(row + col, seatClass, ac));
@@ -69,89 +103,118 @@ public class DataInitializer implements CommandLineRunner {
         }
         seatRepository.saveAll(seats);
 
-        // 5. Seed Flights
+        // 5. Build Comprehensive Bidirectional Route Network Across All Stations
+        // Every single station has a rich set of destination stations for booking tickets,
+        // with 100% reciprocal return trip flight coverage!
         LocalDateTime now = LocalDateTime.now();
         List<Flight> flights = new ArrayList<>();
 
-        // DEL <-> BOM
-        Flight f1 = new Flight();
-        f1.setFlightNumber("6E201");
-        f1.setAircraft(aircraft1);
-        f1.setDepartureAirport(del);
-        f1.setArrivalAirport(bom);
-        f1.setDepartureTime(now.plusDays(1).withHour(6).withMinute(30).withSecond(0));
-        f1.setArrivalTime(now.plusDays(1).withHour(8).withMinute(45).withSecond(0));
-        f1.setBasePrice(new BigDecimal("5240.00"));
-        f1.setStatus(FlightStatus.SCHEDULED);
-        flights.add(f1);
+        // Route definitions: each pair represents a bidirectional connection (outbound + return)
+        String[][] bidirectionalRoutes = {
+            // DEL connections (covers all regional & metro hubs)
+            {"DEL", "BOM"}, {"DEL", "BLR"}, {"DEL", "MAA"}, {"DEL", "HYD"}, {"DEL", "CCU"},
+            {"DEL", "GOI"}, {"DEL", "COK"}, {"DEL", "IXR"}, {"DEL", "AMD"}, {"DEL", "PNQ"},
+            {"DEL", "JAI"}, {"DEL", "LKO"}, {"DEL", "GAU"}, {"DEL", "TRV"}, {"DEL", "IXC"},
+            {"DEL", "PAT"}, {"DEL", "BBI"}, {"DEL", "SXR"}, {"DEL", "IDR"}, {"DEL", "NAG"},
+            {"DEL", "VTZ"}, {"DEL", "VNS"}, {"DEL", "ATQ"}, {"DEL", "CJB"}, {"DEL", "DXB"},
 
-        Flight f2 = new Flight();
-        f2.setFlightNumber("6E205");
-        f2.setAircraft(aircraft1);
-        f2.setDepartureAirport(del);
-        f2.setArrivalAirport(bom);
-        f2.setDepartureTime(now.plusDays(1).withHour(17).withMinute(15).withSecond(0));
-        f2.setArrivalTime(now.plusDays(1).withHour(19).withMinute(30).withSecond(0));
-        f2.setBasePrice(new BigDecimal("5890.00"));
-        f2.setStatus(FlightStatus.SCHEDULED);
-        flights.add(f2);
+            // BOM connections (covers West, South, Central & East hubs)
+            {"BOM", "BLR"}, {"BOM", "MAA"}, {"BOM", "HYD"}, {"BOM", "CCU"}, {"BOM", "GOI"},
+            {"BOM", "COK"}, {"BOM", "IXR"}, {"BOM", "AMD"}, {"BOM", "PNQ"}, {"BOM", "JAI"},
+            {"BOM", "LKO"}, {"BOM", "GAU"}, {"BOM", "TRV"}, {"BOM", "IXC"}, {"BOM", "PAT"},
+            {"BOM", "BBI"}, {"BOM", "SXR"}, {"BOM", "IDR"}, {"BOM", "NAG"}, {"BOM", "VTZ"},
+            {"BOM", "VNS"}, {"BOM", "ATQ"}, {"BOM", "CJB"},
 
-        Flight f3 = new Flight();
-        f3.setFlightNumber("AI502");
-        f3.setAircraft(aircraft1);
-        f3.setDepartureAirport(bom);
-        f3.setArrivalAirport(del);
-        f3.setDepartureTime(now.plusDays(1).withHour(10).withMinute(0).withSecond(0));
-        f3.setArrivalTime(now.plusDays(1).withHour(12).withMinute(15).withSecond(0));
-        f3.setBasePrice(new BigDecimal("5410.00"));
-        f3.setStatus(FlightStatus.SCHEDULED);
-        flights.add(f3);
+            // BLR connections (covers South, East & Central hubs)
+            {"BLR", "MAA"}, {"BLR", "HYD"}, {"BLR", "CCU"}, {"BLR", "GOI"}, {"BLR", "COK"},
+            {"BLR", "IXR"}, {"BLR", "AMD"}, {"BLR", "PNQ"}, {"BLR", "TRV"}, {"BLR", "PAT"},
+            {"BLR", "BBI"}, {"BLR", "NAG"}, {"BLR", "VTZ"}, {"BLR", "CJB"},
 
-        Flight f4 = new Flight();
-        f4.setFlightNumber("6E309");
-        f4.setAircraft(aircraft1);
-        f4.setDepartureAirport(del);
-        f4.setArrivalAirport(blr);
-        f4.setDepartureTime(now.plusDays(1).withHour(14).withMinute(0).withSecond(0));
-        f4.setArrivalTime(now.plusDays(1).withHour(16).withMinute(45).withSecond(0));
-        f4.setBasePrice(new BigDecimal("6120.00"));
-        f4.setStatus(FlightStatus.SCHEDULED);
-        flights.add(f4);
+            // CCU connections (covers East, Northeast & Central hubs)
+            {"CCU", "MAA"}, {"CCU", "HYD"}, {"CCU", "GOI"}, {"CCU", "IXR"}, {"CCU", "GAU"},
+            {"CCU", "PAT"}, {"CCU", "BBI"}, {"CCU", "VTZ"}, {"CCU", "VNS"},
 
-        // JFK <-> LAX (Matching Frontend Default Search and Quick Destination)
-        Flight f5 = new Flight();
-        f5.setFlightNumber("DL404");
-        f5.setAircraft(aircraft2);
-        f5.setDepartureAirport(jfk);
-        f5.setArrivalAirport(lax);
-        f5.setDepartureTime(now.plusDays(1).withHour(8).withMinute(30).withSecond(0));
-        f5.setArrivalTime(now.plusDays(1).withHour(11).withMinute(45).withSecond(0));
-        f5.setBasePrice(new BigDecimal("289.00"));
-        f5.setStatus(FlightStatus.SCHEDULED);
-        flights.add(f5);
+            // HYD connections (covers South & Central hubs)
+            {"HYD", "MAA"}, {"HYD", "GOI"}, {"HYD", "IXR"}, {"HYD", "PNQ"}, {"HYD", "BBI"},
+            {"HYD", "NAG"}, {"HYD", "VTZ"},
 
-        Flight f6 = new Flight();
-        f6.setFlightNumber("DL812");
-        f6.setAircraft(aircraft2);
-        f6.setDepartureAirport(jfk);
-        f6.setArrivalAirport(lax);
-        f6.setDepartureTime(now.plusDays(1).withHour(16).withMinute(0).withSecond(0));
-        f6.setArrivalTime(now.plusDays(1).withHour(19).withMinute(15).withSecond(0));
-        f6.setBasePrice(new BigDecimal("320.00"));
-        f6.setStatus(FlightStatus.SCHEDULED);
-        flights.add(f6);
+            // MAA connections (covers South hubs)
+            {"MAA", "COK"}, {"MAA", "IXR"}, {"MAA", "TRV"}, {"MAA", "VTZ"}, {"MAA", "CJB"},
 
-        // LHR <-> DXB (Matching Frontend Quick Destination)
-        Flight f7 = new Flight();
-        f7.setFlightNumber("BA105");
-        f7.setAircraft(aircraft3);
-        f7.setDepartureAirport(lhr);
-        f7.setArrivalAirport(dxb);
-        f7.setDepartureTime(now.plusDays(1).withHour(13).withMinute(45).withSecond(0));
-        f7.setArrivalTime(now.plusDays(1).withHour(23).withMinute(55).withSecond(0));
-        f7.setBasePrice(new BigDecimal("450.00"));
-        f7.setStatus(FlightStatus.SCHEDULED);
-        flights.add(f7);
+            // IXR (Ranchi) connections (hub connectivity to multiple stations)
+            {"IXR", "PAT"}, {"IXR", "BBI"},
+
+            // Inter-regional connections
+            {"GOI", "PNQ"}, {"GOI", "AMD"},
+            {"COK", "TRV"}, {"COK", "CJB"},
+            {"AMD", "PNQ"}, {"AMD", "JAI"}, {"AMD", "IDR"},
+            {"PNQ", "NAG"},
+            {"JAI", "IXC"}, {"JAI", "ATQ"},
+            {"LKO", "PAT"}, {"LKO", "VNS"},
+            {"GAU", "PAT"},
+            {"TRV", "CJB"},
+            {"IXC", "SXR"}, {"IXC", "ATQ"},
+            {"PAT", "BBI"},
+            {"SXR", "ATQ"},
+            {"IDR", "NAG"},
+
+            // International pairs
+            {"JFK", "LAX"}, {"LHR", "DXB"}
+        };
+
+        int flightCounter = 101;
+        for (String[] route : bidirectionalRoutes) {
+            String originCode = route[0];
+            String destCode = route[1];
+
+            Airport origin = ap.get(originCode);
+            Airport dest = ap.get(destCode);
+            if (origin == null || dest == null) continue;
+
+            Aircraft acOut = fleet.get(flightCounter % 5);
+            Aircraft acRet = fleet.get((flightCounter + 2) % 5);
+
+            String outCarrier = acOut.getAirline().getCode();
+            String retCarrier = acRet.getAirline().getCode();
+
+            int dayOffset = (flightCounter % 7) + 1;
+            int outHour = 6 + (flightCounter % 12);
+            int retHour = 14 + (flightCounter % 8);
+
+            BigDecimal fare = determineFare(originCode, destCode);
+
+            // 1. OUTBOUND FLIGHT (Origin -> Destination)
+            LocalDateTime depOut = now.plusDays(dayOffset).withHour(outHour).withMinute(15).withSecond(0);
+            LocalDateTime arrOut = depOut.plusHours(2).plusMinutes(15);
+
+            Flight outFlight = new Flight();
+            outFlight.setFlightNumber(outCarrier + flightCounter);
+            outFlight.setAircraft(acOut);
+            outFlight.setDepartureAirport(origin);
+            outFlight.setArrivalAirport(dest);
+            outFlight.setDepartureTime(depOut);
+            outFlight.setArrivalTime(arrOut);
+            outFlight.setBasePrice(fare);
+            outFlight.setStatus(FlightStatus.SCHEDULED);
+            flights.add(outFlight);
+            flightCounter++;
+
+            // 2. RETURN TRIP FLIGHT (Destination -> Origin)
+            LocalDateTime depRet = now.plusDays(dayOffset + 2).withHour(retHour).withMinute(45).withSecond(0);
+            LocalDateTime arrRet = depRet.plusHours(2).plusMinutes(10);
+
+            Flight retFlight = new Flight();
+            retFlight.setFlightNumber(retCarrier + flightCounter);
+            retFlight.setAircraft(acRet);
+            retFlight.setDepartureAirport(dest);
+            retFlight.setArrivalAirport(origin);
+            retFlight.setDepartureTime(depRet);
+            retFlight.setArrivalTime(arrRet);
+            retFlight.setBasePrice(fare.add(new BigDecimal("150.00")));
+            retFlight.setStatus(FlightStatus.SCHEDULED);
+            flights.add(retFlight);
+            flightCounter++;
+        }
 
         flightRepository.saveAll(flights);
 
@@ -177,5 +240,19 @@ public class DataInitializer implements CommandLineRunner {
         demoPassenger.setDateOfBirth(LocalDate.of(1995, 5, 12));
         demoPassenger.setGender("M");
         passengerRepository.save(demoPassenger);
+    }
+
+    private BigDecimal determineFare(String u, String v) {
+        if ("JFK".equals(u) || "LAX".equals(u) || "LHR".equals(u) || "DXB".equals(u)) {
+            return new BigDecimal("450.00");
+        }
+        int hash = Math.abs(u.hashCode() + v.hashCode());
+        int mod = hash % 4;
+        switch (mod) {
+            case 0: return new BigDecimal("2800.00");
+            case 1: return new BigDecimal("3600.00");
+            case 2: return new BigDecimal("4400.00");
+            default: return new BigDecimal("5200.00");
+        }
     }
 }

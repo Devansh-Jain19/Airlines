@@ -162,7 +162,7 @@ If you want to run the enterprise MySQL database with full constraints, indexes,
    ```properties
    spring.datasource.url=jdbc:mysql://localhost:3306/airline_db?useSSL=false&serverTimezone=UTC&allowPublicKeyRetrieval=true
    spring.datasource.username=root
-   spring.datasource.password=YOUR_MYSQL_PASSWORD
+   spring.datasource.password=YOUR_MYSQL_PASSWORD 
    spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
    ```
 
