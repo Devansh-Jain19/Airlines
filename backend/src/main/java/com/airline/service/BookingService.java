@@ -134,6 +134,7 @@ public class BookingService {
         List<Ticket> tickets = ticketRepository.findByBookingBookingId(bookingId);
         for (Ticket ticket : tickets) {
             ticket.setStatus(TicketStatus.CANCELLED);
+            ticket.setSeat(null);
             ticketRepository.save(ticket);
         }
     }
