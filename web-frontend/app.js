@@ -159,19 +159,41 @@ function populateAirportsDropdown() {
     el.originSelect.innerHTML = '<option value="" disabled selected>Select Origin Airport</option>';
     el.destSelect.innerHTML = '<option value="" disabled selected>Select Destination Airport</option>';
 
+    const domesticGroup1 = document.createElement('optgroup');
+    domesticGroup1.label = '🇮🇳 Domestic Stations (Indore, Delhi, Mumbai...)';
+    const intlGroup1 = document.createElement('optgroup');
+    intlGroup1.label = '🌐 International Hubs (Dubai, London, Singapore...)';
+
+    const domesticGroup2 = document.createElement('optgroup');
+    domesticGroup2.label = '🇮🇳 Domestic Stations (Indore, Delhi, Mumbai...)';
+    const intlGroup2 = document.createElement('optgroup');
+    intlGroup2.label = '🌐 International Hubs (Dubai, London, Singapore...)';
+
     state.airports.forEach(airport => {
         const code = airport.iataCode;
+        const isIntl = airport.country !== 'India';
         const name = `${code} - ${airport.city} (${airport.name})`;
 
         const opt1 = new Option(name, code);
         const opt2 = new Option(name, code);
-        el.originSelect.add(opt1);
-        el.destSelect.add(opt2);
+
+        if (isIntl) {
+            intlGroup1.appendChild(opt1);
+            intlGroup2.appendChild(opt2);
+        } else {
+            domesticGroup1.appendChild(opt1);
+            domesticGroup2.appendChild(opt2);
+        }
     });
 
-    // Defaults: DEL -> BOM
-    el.originSelect.value = 'DEL';
-    el.destSelect.value = 'BOM';
+    el.originSelect.appendChild(domesticGroup1);
+    el.originSelect.appendChild(intlGroup1);
+    el.destSelect.appendChild(domesticGroup2);
+    el.destSelect.appendChild(intlGroup2);
+
+    // Defaults: IDR (Indore) -> DEL (New Delhi)
+    el.originSelect.value = 'IDR';
+    el.destSelect.value = 'DEL';
 
     updateStationConnectivityHints();
 }

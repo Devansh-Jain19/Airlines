@@ -26,7 +26,7 @@ INSERT INTO airline (airline_id, name, iata_code, country) VALUES
 (4, 'SpiceJet', 'SG', 'India'),
 (5, 'Akasa Air', 'QP', 'India');
 
--- 2. Airports (Full nationwide connectivity across all 25 domestic hubs)
+-- 2. Airports (Expanded 40 Domestic Hubs + 20 Global International Hubs)
 INSERT INTO airport (airport_id, iata_code, name, city, country) VALUES
 (1, 'DEL', 'Indira Gandhi International Airport', 'New Delhi', 'India'),
 (2, 'BOM', 'Chhatrapati Shivaji Maharaj International Airport', 'Mumbai', 'India'),
@@ -52,7 +52,42 @@ INSERT INTO airport (airport_id, iata_code, name, city, country) VALUES
 (22, 'VTZ', 'Visakhapatnam International Airport', 'Visakhapatnam', 'India'),
 (23, 'VNS', 'Lal Bahadur Shastri International Airport', 'Varanasi', 'India'),
 (24, 'ATQ', 'Sri Guru Ram Dass Jee International Airport', 'Amritsar', 'India'),
-(25, 'CJB', 'Coimbatore International Airport', 'Coimbatore', 'India');
+(25, 'CJB', 'Coimbatore International Airport', 'Coimbatore', 'India'),
+(26, 'BHO', 'Raja Bhoj Airport', 'Bhopal', 'India'),
+(27, 'UDR', 'Maharana Pratap Airport', 'Udaipur', 'India'),
+(28, 'IXE', 'Mangaluru International Airport', 'Mangalore', 'India'),
+(29, 'DED', 'Jolly Grant Airport', 'Dehradun', 'India'),
+(30, 'RPR', 'Swami Vivekananda Airport', 'Raipur', 'India'),
+(31, 'IXB', 'Bagdogra International Airport', 'Siliguri / Bagdogra', 'India'),
+(32, 'IXJ', 'Jammu Civil Enclave', 'Jammu', 'India'),
+(33, 'IXL', 'Kushok Bakula Rimpochee Airport', 'Leh (Ladakh)', 'India'),
+(34, 'VGA', 'Vijayawada International Airport', 'Vijayawada', 'India'),
+(35, 'IXU', 'Chhatrapati Sambhajinagar Airport', 'Aurangabad', 'India'),
+(36, 'TRZ', 'Tiruchirappalli International Airport', 'Tiruchirappalli', 'India'),
+(37, 'IXZ', 'Veer Savarkar International Airport', 'Port Blair (Andaman)', 'India'),
+(38, 'IXA', 'Maharaja Bir Bikram Airport', 'Agartala', 'India'),
+(39, 'GWL', 'Rajmata Vijaya Raje Scindia Airport', 'Gwalior', 'India'),
+(40, 'JDH', 'Jodhpur Airport', 'Jodhpur', 'India'),
+(41, 'DXB', 'Dubai International Airport', 'Dubai', 'UAE'),
+(42, 'SIN', 'Singapore Changi Airport', 'Singapore', 'Singapore'),
+(43, 'BKK', 'Suvarnabhumi Airport', 'Bangkok', 'Thailand'),
+(44, 'LHR', 'Heathrow Airport', 'London', 'UK'),
+(45, 'JFK', 'John F. Kennedy International Airport', 'New York', 'USA'),
+(46, 'DOH', 'Hamad International Airport', 'Doha', 'Qatar'),
+(47, 'CDG', 'Charles de Gaulle Airport', 'Paris', 'France'),
+(48, 'FRA', 'Frankfurt Airport', 'Frankfurt', 'Germany'),
+(49, 'LAX', 'Los Angeles International Airport', 'Los Angeles', 'USA'),
+(50, 'HND', 'Haneda Airport', 'Tokyo', 'Japan'),
+(51, 'SYD', 'Sydney Kingsford Smith Airport', 'Sydney', 'Australia'),
+(52, 'YYZ', 'Toronto Pearson International Airport', 'Toronto', 'Canada'),
+(53, 'KUL', 'Kuala Lumpur International Airport', 'Kuala Lumpur', 'Malaysia'),
+(54, 'AMS', 'Amsterdam Airport Schiphol', 'Amsterdam', 'Netherlands'),
+(55, 'ZRH', 'Zurich Airport', 'Zurich', 'Switzerland'),
+(56, 'FCO', 'Leonardo da Vinci–Fiumicino Airport', 'Rome', 'Italy'),
+(57, 'ICN', 'Incheon International Airport', 'Seoul', 'South Korea'),
+(58, 'IST', 'Istanbul Airport', 'Istanbul', 'Turkey'),
+(59, 'KWI', 'Kuwait International Airport', 'Kuwait City', 'Kuwait'),
+(60, 'MUC', 'Munich Airport', 'Munich', 'Germany');
 
 -- 3. Aircraft Models
 INSERT INTO aircraft_model (model_id, manufacturer, model_name, range_km) VALUES
