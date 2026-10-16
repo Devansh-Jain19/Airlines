@@ -5,8 +5,8 @@
     <!-- Auth -->
     <string name="welcome_back">Welcome Back</string>
     <string name="sign_in_subtitle">Sign in to manage flights &amp; bookings</string>
-    <string name="email_label">Email Address</string>
-    <string name="email_hint">e.g. traveler@airline.com</string>
+    <string name="email_label">Email or Name</string>
+    <string name="email_hint">e.g. John Doe or traveler@airline.com</string>
     <string name="password_label">Password</string>
     <string name="password_hint">Enter your password</string>
     <string name="first_name_label">First Name</string>

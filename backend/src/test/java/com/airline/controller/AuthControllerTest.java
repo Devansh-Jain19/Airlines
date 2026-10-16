@@ -79,10 +79,10 @@ class AuthControllerTest {
             .andExpect(jsonPath("$.name").exists());
     }
 
-    // A-02: Wrong password → error
+    // A-02: Any password succeeds
     @Test
     @Order(4)
-    void A02_loginWithWrongPassword_returnsError() throws Exception {
+    void A02_loginWithAnyPassword_succeeds() throws Exception {
         LoginRequest req = new LoginRequest();
         req.setEmail("aarav@gmail.com");
         req.setPassword("WrongPass999");
@@ -90,7 +90,8 @@ class AuthControllerTest {
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
-            .andExpect(status().isBadRequest());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token").exists());
     }
 
     // A-03: Empty email → validation error, no 500
@@ -140,10 +141,10 @@ class AuthControllerTest {
             .andExpect(jsonPath("$.firstName").value("आरव"));
     }
 
-    // A-11: Login with non-existent email → 404, no NPE
+    // A-11: Login with non-existent email or random name → auto-registers & succeeds
     @Test
     @Order(8)
-    void A11_loginNonExistentEmail_returnsError() throws Exception {
+    void A11_loginRandomNameOrNonExistentEmail_autoRegistersAndSucceeds() throws Exception {
         LoginRequest req = new LoginRequest();
         req.setEmail("nobody@nowhere.com");
         req.setPassword("Any@123");
@@ -151,6 +152,22 @@ class AuthControllerTest {
         mockMvc.perform(post("/api/auth/login")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(req)))
-            .andExpect(status().isNotFound());
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token").exists())
+            .andExpect(jsonPath("$.passengerId").exists())
+            .andExpect(jsonPath("$.email").value("nobody@nowhere.com"));
+
+        // Also test with a plain random name without @
+        LoginRequest req2 = new LoginRequest();
+        req2.setEmail("Random Traveler");
+        req2.setPassword("RandomPass");
+
+        mockMvc.perform(post("/api/auth/login")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(req2)))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.token").exists())
+            .andExpect(jsonPath("$.passengerId").exists())
+            .andExpect(jsonPath("$.name").value("Random Traveler"));
     }
 }

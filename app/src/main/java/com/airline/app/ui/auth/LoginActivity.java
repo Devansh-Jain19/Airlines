@@ -73,7 +73,7 @@ public class LoginActivity extends AppCompatActivity {
         String password = binding.etPassword.getText() != null ? binding.etPassword.getText().toString().trim() : "";
 
         if (email.isEmpty()) {
-            binding.tilEmail.setError("Email is required");
+            binding.tilEmail.setError("Email or name is required");
             return;
         } else {
             binding.tilEmail.setError(null);
